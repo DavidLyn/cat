@@ -3,7 +3,7 @@
 
 > 在 https://github.com/DavidLyn 上创建 repository cat
 >
-> 
+> 注意：下述不能用 git@github.com:DavidLyn/cat.git
 
 ```
 git remote add origin https://github.com/DavidLyn/cat.git
@@ -176,6 +176,13 @@ logging:
 
 > com.lvlv.gorilla.cat.util.RestResult
 
++ 创建业务逻辑异常类
+
+> com.lvlv.gorilla.cat.exception.BusinessLogicException
+
++ 创建统一异常处理类
+
+> com.lvlv.gorilla.cat.exception.GlobalExceptionHandler
 
 ---
 # 其他

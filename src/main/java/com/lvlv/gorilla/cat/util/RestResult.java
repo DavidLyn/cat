@@ -11,7 +11,7 @@ public class RestResult {
     /**
      * 结果编码：0 - 成功
      */
-    private int code = 0;
+    private Integer code = 0;
 
     /**
      * 结果信息
@@ -36,7 +36,7 @@ public class RestResult {
      * @param code
      * @param message
      */
-    public RestResult(int code, String message) {
+    public RestResult(Integer code, String message) {
         this.code = code;
         this.message = message;
         this.data = null;
