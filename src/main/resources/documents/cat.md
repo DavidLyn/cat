@@ -1,4 +1,16 @@
 ---
+# 版本管理
+
+> 在 https://github.com/DavidLyn 上创建 repository cat
+>
+> 
+
+```
+git remote add origin https://github.com/DavidLyn/cat.git
+git push -u origin master
+```
+
+---
 # 导入包
 
 ## Mysql
@@ -16,17 +28,17 @@ url: jdbc:mysql://127.0.0.1:3306/catdb?useUnicode=true&characterEncoding=UTF-8&s
 + pom
 
 ```
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.1.11</version>
-        </dependency>
+<dependency>
+    <groupId>com.alibaba</groupId>
+     <artifactId>druid</artifactId>
+     <version>1.1.11</version>
+</dependency>
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
+<dependency>
+    <groupId>log4j</groupId>
+     <artifactId>log4j</artifactId>
+     <version>1.2.17</version>
+</dependency>
 ```
 > 如果不导入 log4j ，运行时会报错
 
@@ -52,7 +64,7 @@ url: jdbc:mysql://127.0.0.1:3306/catdb?useUnicode=true&characterEncoding=UTF-8&s
 
 + pom
 
-```$xslt
+```
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -159,6 +171,11 @@ logging:
 > com.lvlv.gorilla.cat.config.InterceptorConfig
 
 ## 统一返回和统一异常处理
+
++ 创建 RestResult 类
+
+> com.lvlv.gorilla.cat.util.RestResult
+
 
 ---
 # 其他
