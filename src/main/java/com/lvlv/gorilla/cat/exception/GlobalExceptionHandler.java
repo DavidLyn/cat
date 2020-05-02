@@ -1,6 +1,7 @@
 package com.lvlv.gorilla.cat.exception;
 
 import com.lvlv.gorilla.cat.util.RestResult;
+import com.lvlv.gorilla.cat.util.RestStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,10 +25,10 @@ public class GlobalExceptionHandler {
         if (e instanceof BusinessLogicException) {
             BusinessLogicException ble = (BusinessLogicException) e;
 
-            return new RestResult(ble.getCode(), ble.getErrorMessage());
+            return new RestResult(ble.getCode(), ble.getMessage());
         } else {
-            return new RestResult( BusinessLogicException.SERVER_ERROR,
-                                   BusinessLogicException.getServerErrorMessage() );
+            return new RestResult( RestStatus.SERVER_ERROR.getCode(),
+                    RestStatus.SERVER_ERROR.getMessage() );
         }
     }
 

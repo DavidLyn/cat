@@ -3,9 +3,11 @@ package com.lvlv.gorilla.cat.sql;
 import cn.hutool.core.date.DateUtil;
 import com.lvlv.gorilla.cat.entity.sql.User;
 import com.lvlv.gorilla.cat.mapper.UserMapper;
+import com.lvlv.gorilla.cat.util.MysqlUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 
@@ -20,7 +22,7 @@ public class MybatisTests {
         //System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$ testSqlConnent = " + userMapper.testSqlConnent());
 
         User user = new User();
-        user.setUid(6);
+        user.setUid(MysqlUtil.getNextUid());
         user.setName("Lv weiwei6");
         user.setCreatedAt(DateUtil.date());
         user.setUpdatedAt(DateUtil.date());
@@ -32,6 +34,8 @@ public class MybatisTests {
         } catch (Exception e) {
             System.out.println("$$$$$$$$$$$$$$$$$$$$$ Exception : " + e.getMessage());
         }
+
+        //HttpStatus.ACCEPTED
     }
 
     @Test

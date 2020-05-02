@@ -184,6 +184,10 @@ logging:
 
 > com.lvlv.gorilla.cat.exception.GlobalExceptionHandler
 
+## https
+
+## swagger
+
 ---
 # 其他
 

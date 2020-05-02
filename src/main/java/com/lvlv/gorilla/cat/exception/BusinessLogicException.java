@@ -1,10 +1,8 @@
 package com.lvlv.gorilla.cat.exception;
 
+import com.lvlv.gorilla.cat.util.RestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 业务逻辑异常类
@@ -16,52 +14,24 @@ import java.util.Map;
 public class BusinessLogicException extends RuntimeException {
 
     /**
-     * 业务逻辑异常类型编码
+     * 异常类型
      */
-    public static Integer SERVER_ERROR = -1;
-    public static Integer NOT_FIND_USER = 100;
+    private RestStatus status;
 
     /**
-     * 业务逻辑异常类型编码、信息映射
+     * 获取异常代码
+     * @return 异常代码
      */
-    private final static Map<Integer,String>  map = new HashMap() {
-        {
-            put(BusinessLogicException.SERVER_ERROR,"服务器错误");
-            put(BusinessLogicException.NOT_FIND_USER,"无效用户");
-        }
-    };
-
-    /**
-     * 获取 SERVER_ERROR 的错误信息
-     * @return 错误信息
-     */
-    public static String getServerErrorMessage() {
-        String message = BusinessLogicException.map.get(BusinessLogicException.SERVER_ERROR);
-
-        if (message != null) {
-            return message;
-        }
-
-        return "服务器错误";
+    public int getCode() {
+        return status.getCode();
     }
 
     /**
-     * 根据错误编码获取错误信息
-     * @return 错误信息
+     * 获取异常说明
+     * @return 异常说明
      */
-    public String getErrorMessage() {
-        String message = BusinessLogicException.map.get(this.code);
-
-        if (message != null) {
-            return message;
-        }
-
-        return "未知错误";
+    public String getMessage() {
+        return status.getMessage();
     }
-
-    /**
-     * 错误代码
-     */
-    private int code;
 
 }

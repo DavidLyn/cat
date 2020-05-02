@@ -8,7 +8,9 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.lvlv.gorilla.cat.annotation.PassToken;
 import com.lvlv.gorilla.cat.annotation.UserLoginToken;
 import com.lvlv.gorilla.cat.entity.sql.User;
+import com.lvlv.gorilla.cat.exception.BusinessLogicException;
 import com.lvlv.gorilla.cat.service.UserService;
+import com.lvlv.gorilla.cat.util.RestStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -51,25 +53,27 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             if (userLoginToken.required()) {
                 // 执行认证
                 if (token == null) {
-                    throw new RuntimeException("无token，请重新登录");
+                    throw new BusinessLogicException(RestStatus.AUTHENTICATION_NO_TOKEN);
                 }
                 // 获取 token 中的 user id
                 String userId;
                 try {
                     userId = JWT.decode(token).getAudience().get(0);
                 } catch (JWTDecodeException j) {
-                    throw new RuntimeException("401");
+                    throw new BusinessLogicException(RestStatus.AUTHENTICATION_INVALID_TOKEN);
                 }
+
                 User user = userService.findUserByUid(Long.parseLong(userId));
                 if (user == null) {
-                    throw new RuntimeException("用户不存在，请重新登录");
+                    throw new BusinessLogicException(RestStatus.AUTHENTICATION_INVALID_USER);
                 }
+
                 // 验证 token
                 JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
                 try {
                     jwtVerifier.verify(token);
                 } catch (JWTVerificationException e) {
-                    throw new RuntimeException("401");
+                    throw new BusinessLogicException(RestStatus.AUTHENTICATION_VERIFIED_FAILED);
                 }
                 return true;
             }
