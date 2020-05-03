@@ -1,7 +1,15 @@
 server:
   port: 8080
   servlet:
-    context-path: /cat
+    context-path: /api/cat
+
+  # 启用 https
+  #port: 8443
+  #ssl:
+  #  key-store: keystore.p12
+  #  key-store-password: Passw0rd
+  #  key-store-type: PKCS12
+  #  key-alias: fatcat
 
 spring:
   datasource:
@@ -64,3 +72,14 @@ mybatis:
 logging:
   level:
     com.lvlv.gorilla.cat.mapper: debug
+
+# swagger配置
+swagger:
+  basePackage: com.lvlv.gorilla.cat.controller
+  title: Gorilla API
+  description: REST API for Gorilla
+  contact_name: DavidLyn
+  contact_url: www.xxx.com
+  contact_email: xyz@qq.com
+  version: v0.1
+  license_url: http://www.gorilla.com

@@ -1,5 +1,6 @@
 package com.lvlv.gorilla.cat.util;
 
+import com.lvlv.gorilla.cat.exception.BusinessLogicException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,14 +44,24 @@ public class RestResult {
     }
 
     /**
-     * 处理结果是否成功
+     * 根据业务逻辑异常创建操作失败返回对象
+     * @param e 业务逻辑异常
+     */
+    public RestResult(BusinessLogicException e) {
+        this.code = e.getCode();
+        this.message = e.getMessage();
+    }
+
+    /**
+     * 检查处理结果是否成功
      * @return 成功、失败标志
      */
-    public boolean isSuccess() {
+    public boolean checkResult() {
         if (this.code == 0) {
             return true;
         } else {
             return false;
         }
     }
+
 }

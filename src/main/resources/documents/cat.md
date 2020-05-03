@@ -172,9 +172,13 @@ logging:
 
 ## 统一返回和统一异常处理
 
-+ 创建 RestResult 类
++ 创建 Rest 返回结果类
 
 > com.lvlv.gorilla.cat.util.RestResult
+
++ 创建 Rest 结果状态类
+
+> com.lvlv.gorilla.cat.util.RestStatus
 
 + 创建业务逻辑异常类
 
@@ -186,7 +190,98 @@ logging:
 
 ## https
 
-## swagger
+> 生产环境可以采用 springboot + nginx + https，其中证书可到类似阿里云申请
+
+### 使用 keytool 命令生成证书
+
++ 控制台下执行下述命令
+
+```
+keytool -genkey -alias fatcat -dname "CN=Lvvv,OU=lvlv,O=lvlv,L=ChaoYang,ST=BeiJing,C=CN" -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 365
+```
+
+> 将生成文件 keystore.p12 拷贝至项目根目录下
+
+### 修改 application.yml,实现基本的 https 访问（只能用 https 协议访问）
+
+```
+server:
+  #port: 8080
+  servlet:
+    context-path: /api/cat
+
+# https
+  port: 8443
+  ssl:
+    key-store: keystore.p12
+    key-store-password: Passw0rd
+    key-store-type: PKCS12
+    key-alias: fatcat
+```
+
+> 至此重启应用，可使用下述 url 访问
+
+```
+https://localhost:8443/api/cat/user/test
+```
+
+### 添加 HTTP 自动转向 HTTPS 的功能，当用户使用 HTTP 来进行访问的时候自动转为 HTTPS 的方式
+
+> 参考一：[springboot+https+http](https://www.cnblogs.com/zdyang/p/11775839.html)
+>
+> 参考二：[SpringBoot配置HTTPS,并实现HTTP访问自动转HTTPS访问](https://www.jianshu.com/p/8d4aba3b972d)
+
+### 同时支持http和https访问
+
+> 参考：[springboot+https+http](https://www.cnblogs.com/zdyang/p/11775839.html)
+>
+> 实际中应该没有多大用处
+
+## swagger2
+
+### 参考资料
+
++ [Swagger在Springboot中的最全使用案例](https://www.toutiao.com/i6810273550818083339/?tt_from=weixin&utm_campaign=client_share&wxshare_count=1&timestamp=1588498500&app=news_article&utm_source=weixin&utm_medium=toutiao_ios&req_id=2020050317345901001404703209FBDB29&group_id=6810273550818083339)
++ [SpringBoot整合Swagger2，再也不用维护接口文档了！](https://blog.csdn.net/u012702547/article/details/88775298)
+
+### 配置方式
+
++ pom
+
+```
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger2</artifactId>
+    <version>2.9.2</version>
+</dependency>
+        
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger-ui</artifactId>
+    <version>2.9.2</version>
+</dependency>
+```
+
++ application.yml
+
+```
+# swagger配置
+swagger:
+  basePackage: com.lvlv.gorilla.cat.controller
+  title: Gorilla API
+  description: REST API for Gorilla
+  contact: DavidLyn
+  version: v0.1
+  url: http://www.gorilla.com
+```
+
++ 创建 swagger2 的配置类
+
+> com.lvlv.gorilla.cat.config.SwaggerConfig
+
++ [打开swagger2](http://localhost:8080/api/cat/swagger-ui.html)
+
+> 注意此例子中的 `/api/cat` ：http://localhost:8080/api/cat/swagger-ui.html
 
 ---
 # 其他

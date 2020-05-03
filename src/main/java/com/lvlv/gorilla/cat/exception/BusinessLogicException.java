@@ -3,6 +3,7 @@ package com.lvlv.gorilla.cat.exception;
 import com.lvlv.gorilla.cat.util.RestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 /**
  * 业务逻辑异常类
@@ -32,6 +33,15 @@ public class BusinessLogicException extends RuntimeException {
      */
     public String getMessage() {
         return status.getMessage();
+    }
+
+
+    /**
+     * 获取 Http 状态
+     * @return Http 状态
+     */
+    public HttpStatus getStatus() {
+        return status.getStatus();
     }
 
 }
