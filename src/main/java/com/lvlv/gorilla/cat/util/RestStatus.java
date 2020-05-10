@@ -1,5 +1,6 @@
 package com.lvlv.gorilla.cat.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
  * @author lvweiwei
  * @date 2020-05-02 19:00
  */
+@Slf4j
 public enum RestStatus {
 
     SERVER_ERROR(20000,"server error", HttpStatus.INTERNAL_SERVER_ERROR),

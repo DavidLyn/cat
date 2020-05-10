@@ -4,12 +4,14 @@ import cn.hutool.core.codec.BCD;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 密码摘要相关方法
  *
  *  @author lvvv
  */
+@Slf4j
 public class PasswordUtil {
 
     /**

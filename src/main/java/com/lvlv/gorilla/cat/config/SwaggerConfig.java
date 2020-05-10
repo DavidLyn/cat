@@ -1,5 +1,6 @@
 package com.lvlv.gorilla.cat.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
+@Slf4j
 public class SwaggerConfig {
     /**
      * 扫描 controler 的包名

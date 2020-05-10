@@ -11,6 +11,7 @@ import com.lvlv.gorilla.cat.entity.sql.User;
 import com.lvlv.gorilla.cat.exception.BusinessLogicException;
 import com.lvlv.gorilla.cat.service.UserService;
 import com.lvlv.gorilla.cat.util.RestStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -23,6 +24,7 @@ import java.lang.reflect.Method;
  * @author jinbin & lv weiwei
  * @date 2020-05-02 04:05
  */
+@Slf4j
 public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
     UserService userService;

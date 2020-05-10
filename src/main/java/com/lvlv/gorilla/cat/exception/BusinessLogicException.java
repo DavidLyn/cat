@@ -3,6 +3,7 @@ package com.lvlv.gorilla.cat.exception;
 import com.lvlv.gorilla.cat.util.RestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
  */
 @Data
 @AllArgsConstructor
+@Slf4j
 public class BusinessLogicException extends RuntimeException {
 
     /**

@@ -11,6 +11,37 @@ git push -u origin master
 ```
 
 ---
+# 启动/关闭 开发测试环境
+
++ Mysql
+
+> 启动：mysql.server start
+>
+> 停止：mysql.server stop
+>
+> 管理：mysql -uroot -plvv5802001 或 Navicat for Mysql
+
++ Redis
+
+> 启动：brew services start redis 
+>
+> 停止：brew services stop redis
+>
+> 管理：rdm
+
++ mongodb
+
+> 启动 mongo：startmongo
+>
+> 启动 express：startexpress
+>
+> 关闭：stopmongo
+> 
+> 关闭：stopexpress
+>
+> [管理 mongodb](http://localhost:8081)
+
+---
 # 导入包
 
 ## Mysql

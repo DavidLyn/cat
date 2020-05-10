@@ -1,8 +1,7 @@
 package com.lvlv.gorilla.cat.exception;
 
 import com.lvlv.gorilla.cat.util.RestResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,9 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @date 2020-05-02 13:57
  */
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
-
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
