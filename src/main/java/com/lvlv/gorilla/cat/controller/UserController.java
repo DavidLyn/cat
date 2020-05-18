@@ -20,9 +20,10 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @UserLoginToken
+    //@UserLoginToken
     //@GetMapping(value = "/test", produces = "application/json; charset=utf-8")
-    @GetMapping("/test")
+    //@GetMapping("/test")
+    @PostMapping("/test")
     public RestResult test() {
         RestResult result = new RestResult("大小大小");
         log.debug("test");
@@ -34,6 +35,8 @@ public class UserController {
     @PostMapping("/login")
     public RestResult login(@RequestBody User user) {
 
+        log.debug("===============================================================");
+
         RestResult result = new RestResult();
 
         user.setUid(MysqlUtil.getNextUid());
@@ -44,12 +47,11 @@ public class UserController {
         // 将口令加盐并加密
         user.setPassword(PasswordUtil.getEncryptedPasswordWithSalt(user.getPassword(),user.getSalt()));
 
-        String token="";
-        token= JWT.create().withAudience(user.getUid().toString())
+        String token = JWT.create().withAudience(user.getUid().toString())
                 .sign(Algorithm.HMAC256(user.getPassword()));
 
-        result.setData(user);
         result.setMessage(token);    // 使用 message 返回 token
+        result.setData(user);
 
         return result;
     }
