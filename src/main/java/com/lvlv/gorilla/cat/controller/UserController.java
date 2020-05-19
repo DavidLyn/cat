@@ -1,13 +1,13 @@
 package com.lvlv.gorilla.cat.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.lvlv.gorilla.cat.annotation.UserLoginToken;
 import com.lvlv.gorilla.cat.entity.sql.User;
+import com.lvlv.gorilla.cat.exception.BusinessLogicException;
 import com.lvlv.gorilla.cat.service.UserService;
-import com.lvlv.gorilla.cat.util.MysqlUtil;
-import com.lvlv.gorilla.cat.util.PasswordUtil;
-import com.lvlv.gorilla.cat.util.RestResult;
+import com.lvlv.gorilla.cat.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     //@UserLoginToken
     //@GetMapping(value = "/test", produces = "application/json; charset=utf-8")
@@ -34,9 +37,55 @@ public class UserController {
     // 手机号、密码 登录
     @PostMapping("/login")
     public RestResult login(@RequestBody User user) {
+        RestResult result = new RestResult();
 
-        log.info("===============================================================");
+        if ( StrUtil.isBlank(user.getMobile())   ||
+             StrUtil.isBlank(user.getPassword()) ||
+             user.getUid() == null ) {
+            result.setCode(-1);
+            result.setMessage("invalid parameters");
+            return result;
+        }
 
+        User rUser;
+        String rKey;
+        rKey = RedisKeyUtil.getUserKey(user.getUid().toString());
+
+        if (redisUtil.hasKey(rKey)) {
+            rUser = (User) redisUtil.get(rKey);
+        } else {
+            rUser = userService.findUserByUid(user.getUid());
+            if (rUser == null) {
+                result.setCode(-1);
+                result.setMessage("not found user");
+                return result;
+            }
+            redisUtil.set(rKey,rUser);
+        }
+
+        // 根据原有盐值计算输入密码的加密值
+        String inputEncryptedPassword = PasswordUtil.getEncryptedPasswordWithSalt(user.getPassword(), rUser.getSalt());
+
+        if (inputEncryptedPassword.equals(rUser.getPassword())) {
+            result.setData(rUser);
+            return result;   // 登录成功
+        } else {
+            result.setCode(-1);
+            result.setMessage("invalid password");
+            return result;
+        }
+    }
+
+    // 手机号、短信认证码登录
+    @PostMapping("/smslogin")
+    public RestResult smsLogin(@RequestBody User user) {
+
+        return null;
+    }
+
+    // 手机号、密码、短信认证码注册
+    @PostMapping("/register")
+    public RestResult register(@RequestBody User user) {
         RestResult result = new RestResult();
 
         user.setUid(MysqlUtil.getNextUid());
@@ -50,24 +99,12 @@ public class UserController {
         String token = JWT.create().withAudience(user.getUid().toString())
                 .sign(Algorithm.HMAC256(user.getPassword()));
 
+        // 将 token 存入 redis
+
         result.setMessage(token);    // 使用 message 返回 token
         result.setData(user);
 
         return result;
-    }
-
-    // 手机号、短信认证码登录
-    @PostMapping("/smslogin")
-    public RestResult smsLogin(@RequestBody User user) {
-
-        return null;
-    }
-
-    // 手机号、密码、短信认证码注册
-    @PostMapping("/register")
-    public RestResult register(@RequestBody User user) {
-
-        return null;
     }
 
     // 手机号、密码、短信认证码重置密码

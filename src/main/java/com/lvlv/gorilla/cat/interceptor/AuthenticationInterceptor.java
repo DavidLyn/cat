@@ -10,6 +10,8 @@ import com.lvlv.gorilla.cat.annotation.UserLoginToken;
 import com.lvlv.gorilla.cat.entity.sql.User;
 import com.lvlv.gorilla.cat.exception.BusinessLogicException;
 import com.lvlv.gorilla.cat.service.UserService;
+import com.lvlv.gorilla.cat.util.RedisKeyUtil;
+import com.lvlv.gorilla.cat.util.RedisUtil;
 import com.lvlv.gorilla.cat.util.RestStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,10 @@ import java.lang.reflect.Method;
 @Slf4j
 public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
-    UserService userService;
+    private UserService userService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
@@ -65,9 +70,17 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     throw new BusinessLogicException(RestStatus.AUTHENTICATION_INVALID_TOKEN);
                 }
 
-                User user = userService.findUserByUid(Long.parseLong(userId));
-                if (user == null) {
-                    throw new BusinessLogicException(RestStatus.AUTHENTICATION_INVALID_USER);
+                // 从 redis 或 数据库中读取当前 user 信息
+                User user = null;
+                String rKey = RedisKeyUtil.getUserKey(userId);
+                if (redisUtil.hasKey(rKey)) {
+                    user = (User) redisUtil.get(rKey);
+                } else {
+                    user = userService.findUserByUid(Long.parseLong(userId));
+                    if (user == null) {
+                        throw new BusinessLogicException(RestStatus.AUTHENTICATION_INVALID_USER);
+                    }
+                    redisUtil.set(rKey,user);
                 }
 
                 // 验证 token
