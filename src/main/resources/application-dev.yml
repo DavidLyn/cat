@@ -71,7 +71,12 @@ mybatis:
 
 logging:
   level:
-    com.lvlv.gorilla.cat.mapper: debug
+    com.lvlv.gorilla.cat: debug
+  file:
+    path: /Users/lvweiwei/catlog/logs
+  pattern:
+    file: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
+    console: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
 
 # swagger配置
 swagger:

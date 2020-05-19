@@ -315,6 +315,30 @@ swagger:
 > 注意此例子中的 `/api/cat` ：http://localhost:8080/api/cat/swagger-ui.html
 
 ---
+# 日志
+
+## 日志配置
+
++ 参考资料
+
+> [Spring Boot Logging 配置](https://www.jianshu.com/p/1fa12b92d5c4)
+
++ springboot 默认是显示 info 以上
+
++ 设置显示级别为 debug
+
+```
+logging:
+  level:
+    com.lvlv.gorilla.cat: debug
+  file:
+    path: /Users/lvweiwei/catlog/logs
+  pattern:
+    file: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
+    console: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
+```
+
+---
 # 其他
 
 ## Spring Session

@@ -25,8 +25,8 @@ public class UserController {
     //@GetMapping("/test")
     @PostMapping("/test")
     public RestResult test() {
+
         RestResult result = new RestResult("大小大小");
-        log.debug("test");
         return result;
         //throw new RuntimeException("error");
     }
@@ -35,7 +35,7 @@ public class UserController {
     @PostMapping("/login")
     public RestResult login(@RequestBody User user) {
 
-        log.debug("===============================================================");
+        log.info("===============================================================");
 
         RestResult result = new RestResult();
 
