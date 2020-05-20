@@ -1,5 +1,6 @@
 package com.lvlv.gorilla.cat.controller;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -41,26 +42,18 @@ public class UserController {
 
         if ( StrUtil.isBlank(user.getMobile())   ||
              StrUtil.isBlank(user.getPassword()) ||
-             user.getUid() == null ) {
+             user.getUid() == null ||
+             user.getUid() == 0 ) {
             result.setCode(-1);
             result.setMessage("invalid parameters");
             return result;
         }
 
-        User rUser;
-        String rKey;
-        rKey = RedisKeyUtil.getUserKey(user.getUid().toString());
-
-        if (redisUtil.hasKey(rKey)) {
-            rUser = (User) redisUtil.get(rKey);
-        } else {
-            rUser = userService.findUserByUid(user.getUid());
-            if (rUser == null) {
-                result.setCode(-1);
-                result.setMessage("not found user");
-                return result;
-            }
-            redisUtil.set(rKey,rUser);
+        User rUser = userService.findUserByUid(user.getUid());
+        if (rUser == null) {
+            result.setCode(-1);
+            result.setMessage("not found user");
+            return result;
         }
 
         // 根据原有盐值计算输入密码的加密值
@@ -112,6 +105,23 @@ public class UserController {
     public RestResult resetPassword(@RequestBody User user) {
 
         return null;
+    }
+
+    // 向手机发短信
+    @GetMapping("/sendSms")
+    public RestResult sendSms(@RequestParam(value = "mobile", required = true) String mobile) {
+        RestResult result = new RestResult();
+
+        // 生成认证码
+        String vCode = RandomUtil.randomNumbers(6);
+
+        // to-do 向短信平台发送认证码
+
+        // 将手机号和认证码保存到 redis,有效期 100 秒
+        redisUtil.set(RedisKeyUtil.getMobileSmsKey(mobile),vCode,100);
+
+        result.setData("ok");
+        return result;
     }
 
 }

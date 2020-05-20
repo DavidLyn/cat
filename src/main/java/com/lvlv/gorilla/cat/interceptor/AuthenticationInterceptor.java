@@ -71,16 +71,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 }
 
                 // 从 redis 或 数据库中读取当前 user 信息
-                User user = null;
-                String rKey = RedisKeyUtil.getUserKey(userId);
-                if (redisUtil.hasKey(rKey)) {
-                    user = (User) redisUtil.get(rKey);
-                } else {
-                    user = userService.findUserByUid(Long.parseLong(userId));
-                    if (user == null) {
-                        throw new BusinessLogicException(RestStatus.AUTHENTICATION_INVALID_USER);
-                    }
-                    redisUtil.set(rKey,user);
+                User user = userService.findUserByUid(Long.parseLong(userId));
+                if (user == null) {
+                    throw new BusinessLogicException(RestStatus.AUTHENTICATION_INVALID_USER);
                 }
 
                 // 验证 token
