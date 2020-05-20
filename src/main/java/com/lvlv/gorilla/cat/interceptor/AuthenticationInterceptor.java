@@ -10,14 +10,13 @@ import com.lvlv.gorilla.cat.annotation.UserLoginToken;
 import com.lvlv.gorilla.cat.entity.sql.User;
 import com.lvlv.gorilla.cat.exception.BusinessLogicException;
 import com.lvlv.gorilla.cat.service.UserService;
-import com.lvlv.gorilla.cat.util.RedisKeyUtil;
-import com.lvlv.gorilla.cat.util.RedisUtil;
 import com.lvlv.gorilla.cat.util.RestStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
@@ -30,9 +29,6 @@ import java.lang.reflect.Method;
 public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {

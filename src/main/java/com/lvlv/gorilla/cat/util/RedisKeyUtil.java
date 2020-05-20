@@ -26,4 +26,10 @@ public class RedisKeyUtil {
     public static String getMobileSmsKey(String mobile) {
         return "sms:" + mobile;
     }
+
+    // 获取某 userid 的 key name
+    public static String getTokenKey(String uid) {
+        return "token:" + uid;
+    }
+
 }

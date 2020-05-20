@@ -33,4 +33,10 @@ public class UserService {
 
         return user;
     }
+
+    // 增加新用户
+    public void insertUser(User user) {
+        userMapper.insertUser(user);
+        redisUtil.set(RedisKeyUtil.getUserKey(Long.toString(user.getUid())),user);
+    }
 }
