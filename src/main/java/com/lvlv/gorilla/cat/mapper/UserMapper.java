@@ -3,6 +3,7 @@ package com.lvlv.gorilla.cat.mapper;
 import com.lvlv.gorilla.cat.entity.sql.User;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -42,7 +43,13 @@ public interface UserMapper {
      * 同名用户数
      */
     @Select("select count(name) from user where name = #{name}")
-    int conntByName(@Param("name") String name);
+    int countByName(@Param("name") String name);
+
+    /**
+     * 设定手机号记录数
+     */
+    @Select("select count(mobile) from user where mobile = #{mobile}")
+    int countByMobile(@Param("mobile") String mobile);
 
     /**
      * 新增，参数是一个bean
@@ -88,15 +95,15 @@ public interface UserMapper {
      */
     @Update("update user set  "
             + "name = #{name},  "
-            + "nickname  = #{nickname}    "
-            + "birthday  = #{birthday}    "
-            + "mobile  = #{mobile}    "
-            + "email  = #{email}    "
-            + "password  = #{password}    "
-            + "salt  = #{salt}    "
-            + "avatar  = #{avatar}    "
-            + "created_at  = #{createdAt}    "
-            + "updated_at  = #{updatedAt}    "
+            + "nickname  = #{nickname},    "
+            + "birthday  = #{birthday},    "
+            + "mobile  = #{mobile},    "
+            + "email  = #{email},    "
+            + "password  = #{password},    "
+            + "salt  = #{salt},    "
+            + "avatar  = #{avatar},    "
+            + "created_at  = #{createdAt},    "
+            + "updated_at  = #{updatedAt},    "
             + "status  = #{status}    "
             + "where uid = #{uid} ")
     int updateUser(User bean);
@@ -105,12 +112,14 @@ public interface UserMapper {
      * 修改密码
      */
     @Update("update user set  "
-            + "password  = #{password}    "
-            + "salt  = #{salt}    "
+            + "password  = #{password},    "
+            + "salt  = #{salt},    "
+            + "updated_at = #{updatedAt}"
             + "where uid = #{uid} ")
-    int updatePassword( @Param("uid") long uid,
-                        @Param("password") String password,
-                        @Param("salt") String salt );
+    int updatePassword(@Param("uid") long uid,
+                       @Param("password") String password,
+                       @Param("salt") String salt,
+                       @Param("updatedAt")Date updatedAt);
 
     /**
      * 删除

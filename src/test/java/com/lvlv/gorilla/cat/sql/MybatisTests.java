@@ -50,4 +50,9 @@ public class MybatisTests {
     void testCountAll() {
         System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& count all = " + userMapper.conntAll());
     }
+
+    @Test
+    void testCountMobile() {
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mobile count = " + userMapper.countByMobile("13301133157"));
+    }
 }

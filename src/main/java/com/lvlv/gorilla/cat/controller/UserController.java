@@ -31,7 +31,6 @@ public class UserController {
     //@GetMapping("/test")
     @PostMapping("/test")
     public RestResult test() {
-
         RestResult result = new RestResult("大小大小");
         return result;
         //throw new RuntimeException("error");
@@ -144,29 +143,116 @@ public class UserController {
             return result;
         }
 
+        // 检查手机号是否已经注册
+        if (userService.isMobleExisted(user.getMobile())) {
+            result.setCode(-1);
+            result.setMessage("mobile already registered");
+            return result;
+        }
+
+        // 创建新 user 对象
+        User newUser = new User();
+
+        // 参数中唯一可直接使用的是电话号码
+        newUser.setMobile(user.getMobile());
+
         // 创建 uid
-        user.setUid(MysqlUtil.getNextUid());
+        newUser.setUid(MysqlUtil.getNextUid());
 
         // 创建随机名字
-        user.setName(IdUtil.randomUUID());
+        newUser.setName(IdUtil.randomUUID());
 
         // 创建随机盐
-        user.setSalt(PasswordUtil.getRandomSalt());
+        newUser.setSalt(PasswordUtil.getRandomSalt());
 
         // 将口令加盐加密保存
-        user.setPassword(PasswordUtil.getEncryptedPasswordWithSalt(user.getPassword(),user.getSalt()));
+        newUser.setPassword(PasswordUtil.getEncryptedPasswordWithSalt(user.getPassword(),newUser.getSalt()));
 
-        user.setCreatedAt(DateUtil.date());
-        user.setUpdatedAt(DateUtil.date());
+        newUser.setCreatedAt(DateUtil.date());
+        newUser.setUpdatedAt(DateUtil.date());
 
         // 向 user 表中插入新记录
         try {
-            userService.insertUser(user);
+            userService.insertUser(newUser);
         } catch (Exception e) {
             log.error("insert user erorr:" + e.getMessage());
 
             result.setCode(-1);
             result.setMessage("insert user error!");
+            return result;
+        }
+
+        // 创建 token
+        String token = JWT.create().withAudience(newUser.getUid().toString())
+                .sign(Algorithm.HMAC256(newUser.getPassword()));
+
+        // 将 token 存入 redis
+        redisUtil.set(RedisKeyUtil.getTokenKey(newUser.getUid().toString()),token);
+
+        result.setMessage(token);    // 使用 message 返回 token
+        result.setData(newUser);
+
+        return result;
+    }
+
+    // 手机号、密码、短信认证码 重置密码
+    @PostMapping("/resetpassword")
+    public RestResult resetPassword(@RequestBody User user) {
+        RestResult result = new RestResult();
+
+        if ( StrUtil.isBlank(user.getMobile())   ||
+             StrUtil.isBlank(user.getPassword()) ||
+             StrUtil.isBlank(user.getSalt()) ||
+             user.getUid() == null ||
+             user.getUid() == 0 ) {
+
+            result.setCode(-1);
+            result.setMessage("invalid parameters");
+            return result;
+        }
+
+        // 短信认证码使用 salt 传递
+        String vCode = user.getSalt();
+
+        // 检查验证码
+        if (redisUtil.hasKey(RedisKeyUtil.getMobileSmsKey(user.getMobile()))) {
+            String smsCode = (String) redisUtil.get(RedisKeyUtil.getMobileSmsKey(user.getMobile()));
+            if (!vCode.equals(smsCode)) {
+                result.setCode(-1);
+                result.setMessage("verified code error");
+                return result;
+            }
+        } else {
+            result.setCode(-1);
+            result.setMessage("no sms in cache");
+            return result;
+        }
+
+        // 查询当前用户
+        User rUser = userService.findUserByUid(user.getUid());
+        if (rUser == null) {
+            result.setCode(-1);
+            result.setMessage("not found user");
+            return result;
+        }
+
+        // 重新创建随机盐
+        user.setSalt(PasswordUtil.getRandomSalt());
+
+        // 将新口令加盐加密保存
+        user.setPassword(PasswordUtil.getEncryptedPasswordWithSalt(user.getPassword(),user.getSalt()));
+
+        // 设置更新时间
+        user.setUpdatedAt(DateUtil.date());
+
+        // 更新数据库 user 记录
+        try {
+            userService.updateUser(user);
+        } catch (Exception e) {
+            log.error("update user erorr:" + e.getMessage());
+
+            result.setCode(-1);
+            result.setMessage("update user error!");
             return result;
         }
 
@@ -183,29 +269,22 @@ public class UserController {
         return result;
     }
 
-    // 手机号、密码、短信认证码 重置密码
-    @PostMapping("/resetpassword")
-    public RestResult resetPassword(@RequestBody User user) {
-
-        return null;
-    }
-
     // 向手机发短信
     @GetMapping("/sendSms")
     public RestResult sendSms(@RequestParam(value = "mobile", required = true) String mobile) {
         RestResult result = new RestResult();
 
         // 生成认证码
-        //String vCode = RandomUtil.randomNumbers(6);
-        String vCode = "123456";
+        String vCode = RandomUtil.randomNumbers(6);
 
         // to-do 向短信平台发送认证码
 
         // 将手机号和认证码保存到 redis,有效期 100 秒
         redisUtil.set(RedisKeyUtil.getMobileSmsKey(mobile),vCode,100);
 
-        result.setData("ok");
+        // 为测试方便将验证码返回 app 端
+        result.setData(vCode);
+
         return result;
     }
-
 }

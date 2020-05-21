@@ -39,4 +39,19 @@ public class UserService {
         userMapper.insertUser(user);
         redisUtil.set(RedisKeyUtil.getUserKey(Long.toString(user.getUid())),user);
     }
+
+    // 更新用户
+    public void updateUser(User user) {
+        userMapper.updateUser(user);
+        redisUtil.set(RedisKeyUtil.getUserKey(Long.toString(user.getUid())),user);
+    }
+
+    // 检查某手机号是否已经存在
+    public boolean isMobleExisted(String mobile) {
+        if (userMapper.countByMobile(mobile) > 0 ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

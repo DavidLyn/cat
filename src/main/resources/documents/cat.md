@@ -338,6 +338,10 @@ logging:
     console: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
 ```
 
+# 阿里云短信平台
+
+# 阿里云 oss
+
 ---
 # 其他
 
