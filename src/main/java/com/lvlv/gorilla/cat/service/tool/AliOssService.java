@@ -40,6 +40,16 @@ public class AliOssService {
     }
 
     /**
+     *
+     * @param fileUrl
+     * @return
+     */
+    public boolean deleteFromOSS(String fileUrl) {
+        ossClient.deleteObject(aliOssConfig.getBucketName(), fileUrl);
+        return true;
+    }
+
+    /**
      * 用于测试上传到本地文件系统
      * @param fileName
      * @param file

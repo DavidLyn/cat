@@ -1,6 +1,7 @@
 package com.lvlv.gorilla.cat.controller;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -10,10 +11,12 @@ import com.lvlv.gorilla.cat.annotation.UserLoginToken;
 import com.lvlv.gorilla.cat.entity.sql.User;
 import com.lvlv.gorilla.cat.exception.BusinessLogicException;
 import com.lvlv.gorilla.cat.service.UserService;
+import com.lvlv.gorilla.cat.service.tool.AliOssService;
 import com.lvlv.gorilla.cat.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user")
@@ -22,6 +25,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AliOssService aliOssService;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -284,6 +290,92 @@ public class UserController {
 
         // 为测试方便将验证码返回 app 端
         result.setData(vCode);
+
+        return result;
+    }
+
+    // 用户退出登录???
+    @GetMapping("/logout")
+    public RestResult logout(@RequestParam(value = "uid", required = true) Long uid) {
+        RestResult result = new RestResult();
+
+        return result;
+    }
+
+    // 上传并修改用户头像
+    @PostMapping("/uploadAvatar")
+    public RestResult uploadAvatar( @RequestParam(value = "uid", required = true) Long uid,
+                                    @RequestParam("file") MultipartFile file ) {
+        RestResult result = new RestResult();
+
+        // 检查参数
+        if ( uid == null || uid == 0 ) {
+            result.setCode(-1);
+            result.setMessage("invalid uid");
+
+            return result;
+        }
+
+        // 查找 user
+        User user = userService.findUserByUid(uid);
+
+        if (user == null) {
+            result.setCode(-1);
+            result.setMessage("user not existed");
+
+            return result;
+        }
+
+        // 记录原有头像 url
+        String oldAvatarFileUrl = user.getAvatar();
+
+        // 获取上载文件原始名称
+        String originalFilename = file.getOriginalFilename();
+        if (StrUtil.isEmpty(originalFilename)) {
+            result.setCode(-1);
+            result.setMessage("invalid upload file name");
+            return result;
+        }
+
+        // 获取原始文件后缀并生成新文件名
+        String type = "";
+
+        if (originalFilename.lastIndexOf(".") >= 0) {
+            type = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        }
+
+        String newFileName = IdUtil.simpleUUID();
+
+        if (StrUtil.isNotEmpty(type)) {
+            newFileName = newFileName + "." + type;
+        }
+
+        // 上传文件
+        String newAvatarFileUrl = aliOssService.uploadToOSS( newFileName, file );
+
+        if (StrUtil.isEmpty(newAvatarFileUrl)) {
+            result.setCode(-1);
+            result.setMessage("upload to ass error");
+            return result;
+        }
+
+        // 修改 user 对象
+        user.setAvatar(newAvatarFileUrl);
+
+        try {
+            userService.updateUser(user);
+        } catch (Exception e) {
+            aliOssService.deleteFromOSS(newAvatarFileUrl);
+
+            result.setCode(-1);
+            result.setMessage("update user error");
+            return result;
+        }
+
+        // 删除原有头像文件
+        if (StrUtil.isNotEmpty(oldAvatarFileUrl)) {
+            aliOssService.deleteFromOSS(oldAvatarFileUrl);
+        }
 
         return result;
     }

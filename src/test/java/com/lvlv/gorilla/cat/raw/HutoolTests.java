@@ -2,6 +2,7 @@ package com.lvlv.gorilla.cat.raw;
 
 import cn.hutool.core.codec.BCD;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -92,6 +93,21 @@ public class HutoolTests {
         } else {
             System.out.println("0000000");
         }
+    }
+
+    @Test
+    void testGetFileType() {
+
+        int tt = "originalFilename".lastIndexOf(".");
+        System.out.println("tt = " + tt);
+
+
+        String type1 = "originalFilename".substring("originalFilename".lastIndexOf(".") + 1);
+
+        System.out.println("originalFilename = " + type1);
+
+        String type2 = "originalFilename.dat".substring("originalFilename.dat".lastIndexOf(".") + 1);
+        System.out.println("originalFilename.dat = " + type2);
 
     }
 }

@@ -28,7 +28,7 @@ public class FileUploadController {
 
         RestResult result = new RestResult();
 
-        String fileName = IdUtil.simpleUUID() + ".png";
+        String fileName = IdUtil.simpleUUID() ;
 
         if (!writeToLocal(file,"/Users/lvweiwei/catlog",fileName)) {
             result.setCode(-1);
