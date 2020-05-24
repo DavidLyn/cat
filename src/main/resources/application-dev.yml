@@ -78,7 +78,7 @@ logging:
     file: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
     console: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
 
-# swagger配置
+# swagger 配置
 swagger:
   basePackage: com.lvlv.gorilla.cat.controller
   title: Gorilla API
@@ -88,3 +88,11 @@ swagger:
   contact_email: xyz@qq.com
   version: v0.1
   license_url: http://www.gorilla.com
+
+## 阿里云 oss 配置
+alioss:
+  endpoint: oss-cn-hangzhou.aliyuncs.com
+  url: https://xxxx.oss-cn-hangzhou.aliyuncs.com/
+  accessKeyId: your_accessKey_id
+  accessKeySecret: your_accessKey_secret
+  bucketName: your_bucket_name

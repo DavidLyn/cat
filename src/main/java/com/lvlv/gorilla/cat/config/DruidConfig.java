@@ -4,8 +4,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -20,7 +18,6 @@ import java.util.Map;
 @Configuration
 @Slf4j
 public class DruidConfig {
-    private static final Logger log = LoggerFactory.getLogger(DruidConfig.class);
 
     @Value("${druid.login.user_name}")
     private String userName;

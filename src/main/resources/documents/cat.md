@@ -338,9 +338,55 @@ logging:
     console: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
 ```
 
+---
+# 文件上传
+## 添加 FileUploadController
+
+## Postman 测试环境设置
+
++ 上传的文件只能放在 Postman 的工作目录下，可在 Preferens 中设置
+
++ 在发送请求的 body 中选择 form-data，在第一条细节记录的 key 中选择 "file"，此处的 key 值设置"file"；在 value 中在工作目录中选择文件
+
++ 在 FileUploadController 的相应函数中：@RequestParam("file") MultipartFile file；其中 @RequestParam("file") 的 file 与上述 key 值必须要对应
+
+---
 # 阿里云短信平台
 
+---
 # 阿里云 oss
+
++ 参考
+
+> [springboot整合oss实现文件的上传,查看,删除,下载](https://blog.csdn.net/weixin_42370891/article/details/99102508)
+>
+> [SpringBoot 2.X 集成阿里云 OSS 文件上传功能](https://blog.csdn.net/Mrqiang9001/article/details/90200558)
+
+## 添加依赖
+
+```
+<dependency>
+    <groupId>com.aliyun.oss</groupId>
+    <artifactId>aliyun-sdk-oss</artifactId>
+    <version>2.8.3</version>
+</dependency>
+```
+
+## 在 application.yml 中添加配置
+
+```
+## 阿里云 oss 配置
+alioss:
+  endpoint: oss-cn-hangzhou.aliyuncs.com
+  url: https://xxxx.oss-cn-hangzhou.aliyuncs.com/
+  accessKeyId: your_accessKey_id
+  accessKeySecret: your_accessKey_secret
+  bucketName: your_bucket_name
+```
+
+## 增加配置 bean ：AliOssConfig
+
+## 增加组件 AliOssService
 
 ---
 # 其他
