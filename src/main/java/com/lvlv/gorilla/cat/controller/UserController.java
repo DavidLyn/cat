@@ -350,8 +350,9 @@ public class UserController {
             newFileName = newFileName + "." + type;
         }
 
-        // 上传文件
-        String newAvatarFileUrl = aliOssService.uploadToOSS( newFileName, file );
+        // 上传文件 -- 测试时暂上传至本地
+        //String newAvatarFileUrl = aliOssService.uploadToOSS( newFileName, file );
+        String newAvatarFileUrl = aliOssService.uploadToLocal( newFileName, file );
 
         if (StrUtil.isEmpty(newAvatarFileUrl)) {
             result.setCode(-1);
@@ -372,10 +373,10 @@ public class UserController {
             return result;
         }
 
-        // 删除原有头像文件
-        if (StrUtil.isNotEmpty(oldAvatarFileUrl)) {
-            aliOssService.deleteFromOSS(oldAvatarFileUrl);
-        }
+        // 删除原有头像文件 -- 测试时暂注释掉
+//        if (StrUtil.isNotEmpty(oldAvatarFileUrl)) {
+//            aliOssService.deleteFromOSS(oldAvatarFileUrl);
+//        }
 
         return result;
     }

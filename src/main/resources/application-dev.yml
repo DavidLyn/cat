@@ -96,3 +96,10 @@ alioss:
   accessKeyId: your_accessKey_id
   accessKeySecret: your_accessKey_secret
   bucketName: your_bucket_name
+
+## pagehelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

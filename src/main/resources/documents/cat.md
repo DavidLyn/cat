@@ -42,6 +42,11 @@ git push -u origin master
 > [管理 mongodb](http://localhost:8081)
 
 ---
+# 修改 maven 环境
+
+> 在 /Users/lvweiwei/.m2 下添加 settings.xml 文件，将 repository 指向 aliyun
+
+---
 # 导入包
 
 ## Mysql
@@ -313,6 +318,49 @@ swagger:
 + [打开swagger2](http://localhost:8080/api/cat/swagger-ui.html)
 
 > 注意此例子中的 `/api/cat` ：http://localhost:8080/api/cat/swagger-ui.html
+
+## PageHelper
+
++ pom
+
+```
+<dependency>
+    <groupId>com.github.pagehelper</groupId>
+    <artifactId>pagehelper-spring-boot-starter</artifactId>
+    <version>1.2.3</version>
+</dependency>
+```
+
++ application.yml
+
+```
+pagehelper:
+    helperDialect: mysql
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
+```
+
+## WEbsocket
+
++ pom
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-websocket</artifactId>
+</dependency>
+```
+
++ application.yml
+
+```
+
+```
+
++ 添加配置类
+
+> com.lvlv.gorilla.cat.config.WebSocketConfig
 
 ---
 # 日志

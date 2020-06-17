@@ -1,5 +1,7 @@
 
 -- 用户表
+-- 需添加 性别：gender 1-男 2-女 0-保密
+--       简介
 DROP TABLE IF EXISTS user;
 
 CREATE TABLE user(
