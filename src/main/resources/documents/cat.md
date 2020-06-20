@@ -41,6 +41,12 @@ git push -u origin master
 >
 > [管理 mongodb](http://localhost:8081)
 
++ EMQ X
+
+> 启动：startemqx
+>
+> 关闭：stopemqx
+
 ---
 # 修改 maven 环境
 
@@ -341,7 +347,7 @@ pagehelper:
     params: count=countSql
 ```
 
-## WEbsocket
+## WEbsocket - 暂时先搁置，计划用 EMQ X 实现消息推送和未来的 im
 
 + pom
 
@@ -352,15 +358,26 @@ pagehelper:
 </dependency>
 ```
 
++ 添加配置类
+
+> com.lvlv.gorilla.cat.config.WebSocketConfig
+
+## 集成 MQTT(EMQ X)
+
++ pom
+
+```
+<dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-mqtt</artifactId>
+</dependency>
+```
+
 + application.yml
 
 ```
 
 ```
-
-+ 添加配置类
-
-> com.lvlv.gorilla.cat.config.WebSocketConfig
 
 ---
 # 日志
