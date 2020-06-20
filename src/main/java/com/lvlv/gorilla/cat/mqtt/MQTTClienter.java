@@ -50,22 +50,26 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
             return;
         }
 
-        try {
-            // 连接 MQTT broker
-            this.connect();
+        initMQTT();
+    }
 
-            // 订阅主题
-            this.subscribe("test");
+    /**
+     * 连接 MQTT 进行订阅初始化
+     */
+    private void initMQTT() {
+        // 连接 MQTT broker
+        this.connect();
 
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        // TODO  此处对订阅进行初始化
+        this.subscribe("test");
+        this.subscribe("login");
     }
 
     @Override
     public void connectionLost(Throwable throwable) {
         log.info("断开了MQTT连接 ：{}", throwable.getMessage());
-        log.error(throwable.getMessage(), throwable);
+        //log.error(throwable.getMessage(), throwable);
+        this.initMQTT();
     }
 
     @Override
@@ -173,7 +177,7 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
      * @return
      * @throws MqttException
      */
-    public boolean subscribe(String topic) throws MqttException {
+    public boolean subscribe(String topic) {
         try {
             mqttClient.subscribe(topic);
             return true;
