@@ -1,13 +1,20 @@
 package com.lvlv.gorilla.cat.mqtt;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * MQTT 客户端
@@ -15,6 +22,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>, MqttCallback {
+
+    @Autowired
+    RestTemplate restTemplate;
 
     @Value("${mqtt.userName}")
     private String userName;
@@ -36,6 +46,12 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
 
     @Value("${mqtt.keepalive}")
     private int keepalive;
+
+    @Value("${mqtt.getClientsUrl}")
+    private String getClientsUrl;
+
+    @Value("${mqtt.deleteClientUrl}")
+    private String deleteClientUrl;
 
     private MqttClient mqttClient;
 
@@ -63,6 +79,9 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
         // TODO  此处对订阅进行初始化
         this.subscribe("test");
         this.subscribe("login");
+
+        // 获取当前客户信息
+        getMQTTClients();
     }
 
     @Override
@@ -82,6 +101,48 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
         log.info("发布消息成功");
     }
+
+    /**
+     * 通过 Http Api 获取 MQTT 当前客户端
+     */
+    private void getMQTTClients() {
+        ResponseEntity<String> responseEntity = restTemplate.exchange
+                (getClientsUrl, HttpMethod.GET, new HttpEntity<String>(this.getMQTTHttpApiHeader()), String.class);
+
+        log.info("++++++++++++++++++++++++++++++ MQTT get clients = {}", responseEntity.getBody());
+    }
+
+    /**
+     * 从 EMQX 中踢掉 clientid
+     * @param clientid
+     */
+    private void deleteClient(String clientid) {
+        if (StrUtil.isBlank(clientid)) {
+            log.warn("请求 MQTT 踢掉连接时无效的 clientid!");
+            return;
+        }
+        ResponseEntity<String> responseEntity = restTemplate.exchange
+                (getClientsUrl + clientid, HttpMethod.DELETE, new HttpEntity<String>(this.getMQTTHttpApiHeader()), String.class);
+
+        log.info("++++++++++++++++++++++++++++++ MQTT delete client = {}", responseEntity.getBody());
+    }
+
+    /**
+     * 创建访问 EMQX Http Api 的 header
+     * @return
+     */
+    private HttpHeaders getMQTTHttpApiHeader() {
+        String userMsg = userName + ":" + password;
+        String base64UserMsg = "Basic " + Base64.encodeBase64String(userMsg.getBytes());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", base64UserMsg);
+        return headers;
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    //   以下为操作 MQTT 的公用方法
+    //-------------------------------------------------------------------------------------------------
 
     /**
      * 连接 MQTT broker

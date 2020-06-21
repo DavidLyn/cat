@@ -376,8 +376,21 @@ pagehelper:
 + application.yml
 
 ```
-
+mqtt:
+  userName: admin
+  password: public
+  url: tcp://127.0.0.1:1883
+  clientID: CatEyes                                # 这个改不改随意，但不同的客户端肯定不能一样
+  defaultTopic: test                               # 默认主题
+  timeout: 30
+  keepalive: 60
 ```
+
+## RestTemplate
+
++ 增加配置类
+
+> com.lvlv.gorilla.cat.config.RestTemplateConfig
 
 ---
 # 日志

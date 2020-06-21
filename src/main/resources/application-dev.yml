@@ -113,3 +113,5 @@ mqtt:
   defaultTopic: test                               # 默认主题
   timeout: 30
   keepalive: 60
+  getClientsUrl: http://127.0.0.1:8081/api/v4/clients
+  deleteClientUrl: http://localhost:8081/api/v4/clients/
