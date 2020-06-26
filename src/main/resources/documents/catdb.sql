@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS catdb;
+CREATE DATABASE catdb CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+USE catdb;
 
 -- 用户表
 -- 需添加 性别：gender 1-男 2-女 0-保密
@@ -8,6 +12,7 @@ CREATE TABLE user(
   uid bigint NOT NULL COMMENT '用户ID',
   name varchar(50) NOT NULL DEFAULT '' UNIQUE COMMENT '用户名',
   nickname varchar(50) NOT NULL DEFAULT '' COMMENT '昵称',
+  gender smallint NOT NULL DEFAULT 0 COMMENT '1-男 2-女 0-保密',
   birthday varchar(50) NOT NULL DEFAULT '' COMMENT '生日 yyyy-mm-dd',
   mobile varchar(50) NOT NULL DEFAULT '' COMMENT '手机号',
   email varchar(50) NOT NULL DEFAULT '' COMMENT '邮箱',
@@ -18,4 +23,4 @@ CREATE TABLE user(
   updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   status int(2) NOT NULL DEFAULT 0 COMMENT '状态: 0-(正常)在线 1-(正常)不在线 11-(不正常)注销 12-(不正常)封号',
   PRIMARY KEY (uid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT  CHARSET=utf8mb4 COMMENT='用户表';

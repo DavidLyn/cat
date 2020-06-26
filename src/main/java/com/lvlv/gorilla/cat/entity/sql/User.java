@@ -9,6 +9,7 @@ public class User {
     private Long uid;
     private String name = "";
     private String nickname = "";
+    private Integer gender = 0;
     private String birthday = "";
     private String mobile = "";
     private String email = "";

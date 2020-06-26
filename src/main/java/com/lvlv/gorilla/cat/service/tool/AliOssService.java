@@ -45,7 +45,12 @@ public class AliOssService {
      * @return
      */
     public boolean deleteFromOSS(String fileUrl) {
-        ossClient.deleteObject(aliOssConfig.getBucketName(), fileUrl);
+        try {
+            ossClient.deleteObject(aliOssConfig.getBucketName(), fileUrl);
+        } catch (Exception e) {
+            log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!! deleteFromOSS error : " + e.getMessage());
+            return false;
+        }
         return true;
     }
 

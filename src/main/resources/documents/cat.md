@@ -84,11 +84,15 @@ url: jdbc:mysql://127.0.0.1:3306/catdb?useUnicode=true&characterEncoding=UTF-8&s
 ```
 > 如果不导入 log4j ，运行时会报错
 
++ 在 resources 下添加 log4j.properties
+
+> 如果不添加,运行时会报警告
+
 + 添加配置类 com.lvlv.gorilla.cat.config.DruidConfig
 
 + 监控 Druid
 
-> http://127.0.0.1:8080/druid/index.html
+> http://127.0.0.1:8080/api/cat//druid/index.html
 
 ## [Hutool](https://hutool.cn/docs/#/)
 

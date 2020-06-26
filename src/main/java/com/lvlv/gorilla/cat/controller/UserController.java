@@ -283,6 +283,8 @@ public class UserController {
         // 生成认证码
         String vCode = RandomUtil.randomNumbers(6);
 
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 手机认证码:" + mobile + "-" + vCode);
+
         // to-do 向短信平台发送认证码
 
         // 将手机号和认证码保存到 redis,有效期 100 秒
@@ -351,8 +353,8 @@ public class UserController {
         }
 
         // 上传文件 -- 测试时暂上传至本地
-        //String newAvatarFileUrl = aliOssService.uploadToOSS( newFileName, file );
-        String newAvatarFileUrl = aliOssService.uploadToLocal( newFileName, file );
+        String newAvatarFileUrl = aliOssService.uploadToOSS( newFileName, file );
+        //String newAvatarFileUrl = aliOssService.uploadToLocal( newFileName, file );
 
         if (StrUtil.isEmpty(newAvatarFileUrl)) {
             result.setCode(-1);
@@ -373,10 +375,11 @@ public class UserController {
             return result;
         }
 
-        // 删除原有头像文件 -- 测试时暂注释掉
-//        if (StrUtil.isNotEmpty(oldAvatarFileUrl)) {
-//            aliOssService.deleteFromOSS(oldAvatarFileUrl);
-//        }
+        // 删除原有头像文件,注意:不能用 url,需要用 文件名
+        String oldFileName = StrUtil.subAfter(oldAvatarFileUrl,"/",true);
+        if (StrUtil.isNotEmpty(oldFileName)) {
+            aliOssService.deleteFromOSS(oldFileName);
+        }
 
         return result;
     }

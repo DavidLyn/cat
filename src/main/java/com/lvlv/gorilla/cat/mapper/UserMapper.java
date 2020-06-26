@@ -55,21 +55,22 @@ public interface UserMapper {
      * 新增，参数是一个bean
      */
     @Insert("insert into user       "
-            + "(uid, name, nickname, birthday, mobile, email, password, salt, avatar, created_at, updated_at, status)    "
+            + "(uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, created_at, updated_at, status)    "
             + "values                   "
-            + "(#{uid}, #{name}, #{nickname}, #{birthday}, #{mobile}, #{email}, #{password}, #{salt}, #{avatar}, #{createdAt}, #{updatedAt}, #{status}) ")
+            + "(#{uid}, #{name}, #{nickname}, #{gender}, #{birthday}, #{mobile}, #{email}, #{password}, #{salt}, #{avatar}, #{createdAt}, #{updatedAt}, #{status}) ")
     int insertUser(User bean);
 
     /**
      * 根据 uid 查询用户
      */
-    @Select("select uid, name, nickname, birthday, mobile, email, password, salt, avatar, created_at, updated_at, status  "
+    @Select("select uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, created_at, updated_at, status  "
             + "from user "
             + "where uid = #{uid} ")
     @Results(id="userMap", value={
             @Result(column="uid", property="uid"),
             @Result(column="name", property="name"),
-            @Result(column="nickname ", property="nickname"),
+            @Result(column="nickname", property="nickname"),
+            @Result(column="gender", property="gender"),
             @Result(column="birthday", property="birthday"),
             @Result(column="mobile", property="mobile"),
             @Result(column="email", property="email"),
@@ -86,7 +87,7 @@ public interface UserMapper {
      * 查询所有用户
      */
     @ResultMap("userMap")
-    @Select("select uid, name, nickname, birthday, mobile, email, password, salt, avatar, created_at, updated_at, status  "
+    @Select("select uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, created_at, updated_at, status  "
             + "from user ")
     List<User> findAll();
 
@@ -96,6 +97,7 @@ public interface UserMapper {
     @Update("update user set  "
             + "name = #{name},  "
             + "nickname  = #{nickname},    "
+            + "gender  = #{gender},    "
             + "birthday  = #{birthday},    "
             + "mobile  = #{mobile},    "
             + "email  = #{email},    "
