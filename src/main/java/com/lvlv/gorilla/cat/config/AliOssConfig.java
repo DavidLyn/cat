@@ -13,31 +13,31 @@ public class AliOssConfig {
     /**
      * 阿里云 oss 站点
      */
-    @Value("${alioss.endpoint}")
+    @Value("${aliyun.oss.endpoint}")
     private String endpoint;
 
     /**
      * 阿里云 oss 资源访问 url
      */
-    @Value("${alioss.url}")
+    @Value("${aliyun.oss.url}")
     private String url;
 
     /**
-     * 阿里云 oss 公钥
+     * 阿里云公钥
      */
-    @Value("${alioss.accessKeyId}")
+    @Value("${aliyun.accessKeyId}")
     private String accessKeyId;
 
     /**
-     * 阿里云 oss 私钥
+     * 阿里云私钥
      */
-    @Value("${alioss.accessKeySecret}")
+    @Value("${aliyun.accessKeySecret}")
     private String accessKeySecret;
 
     /**
      * 阿里云 oss 文件根目录
      */
-    @Value("${alioss.bucketName}")
+    @Value("${aliyun.oss.bucketName}")
     private String bucketName;
 
     @Bean

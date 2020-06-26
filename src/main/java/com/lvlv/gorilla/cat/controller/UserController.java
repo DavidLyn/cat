@@ -8,6 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.lvlv.gorilla.cat.annotation.UserLoginToken;
+import com.lvlv.gorilla.cat.config.AliSmsConfig;
 import com.lvlv.gorilla.cat.entity.sql.User;
 import com.lvlv.gorilla.cat.exception.BusinessLogicException;
 import com.lvlv.gorilla.cat.service.UserService;
@@ -28,6 +29,9 @@ public class UserController {
 
     @Autowired
     private AliOssService aliOssService;
+
+    @Autowired
+    AliSmsConfig aliSmsConfig;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -285,7 +289,13 @@ public class UserController {
 
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 手机认证码:" + mobile + "-" + vCode);
 
-        // to-do 向短信平台发送认证码
+        // 向短信平台发送认证码
+        if (!aliSmsConfig.sendSms(mobile,vCode)) {
+            result.setCode(-1);
+            result.setMessage("sendSms error");
+
+            return result;
+        }
 
         // 将手机号和认证码保存到 redis,有效期 100 秒
         redisUtil.set(RedisKeyUtil.getMobileSmsKey(mobile),vCode,100);

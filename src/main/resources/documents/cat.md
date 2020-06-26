@@ -433,10 +433,41 @@ logging:
 + 在 FileUploadController 的相应函数中：@RequestParam("file") MultipartFile file；其中 @RequestParam("file") 的 file 与上述 key 值必须要对应
 
 ---
-# 阿里云短信平台
+# 阿里云
 
----
-# 阿里云 oss
++ 在 application.yml 中添加配置
+  
+```
+aliyun:
+  accessKeyId: LTAI4G4BfFSXqH89uLA6ss6M
+  accessKeySecret: TZUfPByxEgYSQQKKS4sg8XMoBpSYlT
+```
+
+## 短信平台
+
+### 添加依赖
+
+```
+<dependency>
+  <groupId>com.aliyun</groupId>
+  <artifactId>aliyun-java-sdk-core</artifactId>
+  <version>4.5.0</version>
+</dependency>
+```
+
+### 在 application.yml 中添加配置
+
+```
+aliyun:
+  ...
+  sms:      # 短信服务 配置
+    templateCode: SMS_193524488
+    signName: 猩猩商城
+```
+
+### 增加配置组件 AliSmsConfig
+
+## 阿里云 oss
 
 + 参考
 
@@ -444,7 +475,7 @@ logging:
 >
 > [SpringBoot 2.X 集成阿里云 OSS 文件上传功能](https://blog.csdn.net/Mrqiang9001/article/details/90200558)
 
-## 添加依赖
+### 添加依赖
 
 ```
 <dependency>
@@ -454,21 +485,20 @@ logging:
 </dependency>
 ```
 
-## 在 application.yml 中添加配置
+### 在 application.yml 中添加配置
 
 ```
-## 阿里云 oss 配置
-alioss:
-  endpoint: oss-cn-hangzhou.aliyuncs.com
-  url: https://xxxx.oss-cn-hangzhou.aliyuncs.com/
-  accessKeyId: your_accessKey_id
-  accessKeySecret: your_accessKey_secret
-  bucketName: your_bucket_name
+aliyun:
+  ...
+  oss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    url: https://xxxx.oss-cn-hangzhou.aliyuncs.com/
+    bucketName: your_bucket_name
 ```
 
-## 增加配置 bean ：AliOssConfig
+### 增加配置 bean ：AliOssConfig
 
-## 增加组件 AliOssService
+### 增加组件 AliOssService
 
 ---
 # 其他

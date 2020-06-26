@@ -90,13 +90,17 @@ swagger:
   version: v0.1
   license_url: http://www.gorilla.com
 
-## 阿里云 oss 配置
-alioss:
-  endpoint: oss-cn-beijing.aliyuncs.com
-  url: https://lvlv-oss-001.oss-cn-beijing.aliyuncs.com/
+## 阿里云配置
+aliyun:
   accessKeyId: LTAI4G4BfFSXqH89uLA6ss6M
   accessKeySecret: TZUfPByxEgYSQQKKS4sg8XMoBpSYlT
-  bucketName: lvlv-oss-001
+  oss:      # oss 配置
+    endpoint: oss-cn-beijing.aliyuncs.com
+    url: https://lvlv-oss-001.oss-cn-beijing.aliyuncs.com/
+    bucketName: lvlv-oss-001
+  sms:      # 短信服务 配置
+    templateCode: SMS_193524488
+    signName: 猩猩商城
 
 ## pagehelper
 pagehelper:
