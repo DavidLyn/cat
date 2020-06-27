@@ -19,7 +19,7 @@ public class RestResult {
     /**
      * 结果信息
      */
-    private String message = "";
+    private String message = "ok";
 
     /**
      * 返回数据

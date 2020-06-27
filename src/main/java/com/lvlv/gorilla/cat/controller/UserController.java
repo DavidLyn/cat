@@ -74,14 +74,16 @@ public class UserController {
         // 根据原有盐值计算输入密码的加密值
         String inputEncryptedPassword = PasswordUtil.getEncryptedPasswordWithSalt(user.getPassword(), rUser.getSalt());
 
-        if (inputEncryptedPassword.equals(rUser.getPassword())) {
-            result.setData(rUser);
-            return result;   // 登录成功
-        } else {
+        if (!inputEncryptedPassword.equals(rUser.getPassword())) {
             result.setCode(-1);
             result.setMessage("invalid password");
             return result;
         }
+
+        setTokenAndResetSalt(rUser);
+
+        result.setData(rUser);
+        return result;
     }
 
     // 手机号、短信认证码登录
@@ -122,8 +124,10 @@ public class UserController {
             return result;
         }
 
+        setTokenAndResetSalt(rUser);
+
         result.setData(rUser);
-        return result;   // 登录成功
+        return result;
     }
 
     // 手机号、密码、短信认证码注册
@@ -196,14 +200,8 @@ public class UserController {
             return result;
         }
 
-        // 创建 token
-        String token = JWT.create().withAudience(newUser.getUid().toString())
-                .sign(Algorithm.HMAC256(newUser.getPassword()));
+        setTokenAndResetSalt(newUser);
 
-        // 将 token 存入 redis
-        redisUtil.set(RedisKeyUtil.getTokenKey(newUser.getUid().toString()),token);
-
-        result.setMessage(token);    // 使用 message 返回 token
         result.setData(newUser);
 
         return result;
@@ -270,14 +268,8 @@ public class UserController {
             return result;
         }
 
-        // 创建 token
-        String token = JWT.create().withAudience(user.getUid().toString())
-                .sign(Algorithm.HMAC256(user.getPassword()));
+        setTokenAndResetSalt(user);
 
-        // 将 token 存入 redis
-        redisUtil.set(RedisKeyUtil.getTokenKey(user.getUid().toString()),token);
-
-        result.setMessage(token);    // 使用 message 返回 token
         result.setData(user);
 
         return result;
@@ -290,8 +282,6 @@ public class UserController {
 
         // 生成认证码
         String vCode = RandomUtil.randomNumbers(6);
-
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 手机认证码:" + mobile + "-" + vCode);
 
         // 向短信平台发送认证码
         if (!aliSmsConfig.sendSms(mobile,vCode)) {
@@ -366,8 +356,9 @@ public class UserController {
             newFileName = newFileName + "." + type;
         }
 
-        // 上传文件 -- 测试时暂上传至本地
+        // 上传文件至 Aliyun oss
         String newAvatarFileUrl = aliOssService.uploadToOSS( newFileName, file );
+        // 上传文件 -- 测试时暂上传至本地
         //String newAvatarFileUrl = aliOssService.uploadToLocal( newFileName, file );
 
         if (StrUtil.isEmpty(newAvatarFileUrl)) {
@@ -395,6 +386,28 @@ public class UserController {
             aliOssService.deleteFromOSS(oldFileName);
         }
 
+        // 返回 头像 url
+        result.setData(newAvatarFileUrl);
+
         return result;
+    }
+
+    /**
+     * 为向前端返回的 user 设置 token,并复位 salt
+     * @param user
+     */
+    private void setTokenAndResetSalt(User user) {
+        // 创建 token
+        String token = JWT.create().withAudience(user.getUid().toString())
+                .sign(Algorithm.HMAC256(user.getPassword()));
+
+        // 将 token 存入 redis
+        redisUtil.set(RedisKeyUtil.getTokenKey(user.getUid().toString()),token);
+
+        // 使用 password 返回 token
+        user.setPassword(token);
+
+        // reset salt
+        user.setSalt(null);
     }
 }
