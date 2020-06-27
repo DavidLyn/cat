@@ -19,6 +19,7 @@ CREATE TABLE user(
   password varchar(128) NOT NULL DEFAULT '' COMMENT '密码摘要',
   salt varchar(128) NOT NULL DEFAULT '' COMMENT '盐',
   avatar varchar(128) NOT NULL DEFAULT '' COMMENT '头像',
+  profile varchar(255) NOT NULL DEFAULT '' COMMENT '个人简介',
   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   status int(2) NOT NULL DEFAULT 0 COMMENT '状态: 0-(正常)在线 1-(正常)不在线 11-(不正常)注销 12-(不正常)封号',

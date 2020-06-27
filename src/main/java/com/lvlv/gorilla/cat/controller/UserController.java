@@ -52,15 +52,19 @@ public class UserController {
         RestResult result = new RestResult();
 
         if ( StrUtil.isBlank(user.getMobile())   ||
-             StrUtil.isBlank(user.getPassword()) ||
-             user.getUid() == null ||
-             user.getUid() == 0 ) {
+             StrUtil.isBlank(user.getPassword()) ) {
             result.setCode(-1);
             result.setMessage("invalid parameters");
             return result;
         }
 
-        User rUser = userService.findUserByUid(user.getUid());
+        User rUser;
+        if (user.getUid() == null || user.getUid() == 0 ) {
+            rUser = userService.findUserByMobile(user.getMobile());
+        } else {
+            rUser = userService.findUserByUid(user.getUid());
+        }
+
         if (rUser == null) {
             result.setCode(-1);
             result.setMessage("not found user");

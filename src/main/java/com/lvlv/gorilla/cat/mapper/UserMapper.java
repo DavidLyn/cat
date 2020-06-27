@@ -10,6 +10,27 @@ import java.util.List;
 public interface UserMapper {
 
     /**
+     * 定义 Results map, 可通过 @ResultMap("userMap") 使用
+     * @return
+     */
+    @Results(id="userMap", value={
+            @Result(column="uid", property="uid"),
+            @Result(column="name", property="name"),
+            @Result(column="nickname", property="nickname"),
+            @Result(column="gender", property="gender"),
+            @Result(column="birthday", property="birthday"),
+            @Result(column="mobile", property="mobile"),
+            @Result(column="email", property="email"),
+            @Result(column="password", property="password"),
+            @Result(column="password", property="salt"),
+            @Result(column="avatar", property="avatar"),
+            @Result(column="profile", property="profile"),
+            @Result(column="created_at", property="createdAt"),
+            @Result(column="updated_at", property="updatedAt"),
+            @Result(column="status", property="status")
+    })
+
+    /**
      * 总用户数
      */
     @Select("select count(uid) from user")
@@ -55,39 +76,36 @@ public interface UserMapper {
      * 新增，参数是一个bean
      */
     @Insert("insert into user       "
-            + "(uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, created_at, updated_at, status)    "
+            + "(uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, profile, created_at, updated_at, status)    "
             + "values                   "
-            + "(#{uid}, #{name}, #{nickname}, #{gender}, #{birthday}, #{mobile}, #{email}, #{password}, #{salt}, #{avatar}, #{createdAt}, #{updatedAt}, #{status}) ")
+            + "(#{uid}, #{name}, #{nickname}, #{gender}, #{birthday}, #{mobile}, #{email}, #{password}, #{salt}, #{avatar}, #{profile}, #{createdAt}, #{updatedAt}, #{status}) ")
     int insertUser(User bean);
 
     /**
      * 根据 uid 查询用户
      */
-    @Select("select uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, created_at, updated_at, status  "
+    @ResultMap("userMap")
+    @Select("select uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, profile, created_at, updated_at, status  "
             + "from user "
             + "where uid = #{uid} ")
-    @Results(id="userMap", value={
-            @Result(column="uid", property="uid"),
-            @Result(column="name", property="name"),
-            @Result(column="nickname", property="nickname"),
-            @Result(column="gender", property="gender"),
-            @Result(column="birthday", property="birthday"),
-            @Result(column="mobile", property="mobile"),
-            @Result(column="email", property="email"),
-            @Result(column="password", property="password"),
-            @Result(column="password", property="salt"),
-            @Result(column="avatar", property="avatar"),
-            @Result(column="created_at", property="createdAt"),
-            @Result(column="updated_at", property="updatedAt"),
-            @Result(column="status", property="status")
-    })
     User findUserByUid(@Param("uid") long uid);
+
+    /**
+     * 根据 电话号码 查询用户
+     * @param mobile
+     * @return
+     */
+    @ResultMap("userMap")
+    @Select("select uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, profile, created_at, updated_at, status  "
+            + "from user "
+            + "where mobile = #{mobile} ")
+    User findUserByMobile(@Param("mobile") String mobile);
 
     /**
      * 查询所有用户
      */
     @ResultMap("userMap")
-    @Select("select uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, created_at, updated_at, status  "
+    @Select("select uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, profile, created_at, updated_at, status  "
             + "from user ")
     List<User> findAll();
 
@@ -104,6 +122,7 @@ public interface UserMapper {
             + "password  = #{password},    "
             + "salt  = #{salt},    "
             + "avatar  = #{avatar},    "
+            + "profile  = #{profile},    "
             + "created_at  = #{createdAt},    "
             + "updated_at  = #{updatedAt},    "
             + "status  = #{status}    "

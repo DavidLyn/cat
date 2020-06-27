@@ -16,6 +16,7 @@ public class User {
     private String password = "";
     private String salt = "";
     private String avatar = "";
+    private String profile = "";
     private Date createdAt;
     private Date updatedAt;
     private Integer status = 1;
