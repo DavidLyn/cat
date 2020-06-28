@@ -67,6 +67,15 @@ public interface UserMapper {
     int countByName(@Param("name") String name);
 
     /**
+     * 检查昵称是否重复
+     * @param uid
+     * @param nickname
+     * @return
+     */
+    @Select("select count(nickname) from user where uid != #{uid} and nickname = #{nickname}")
+    int countByNickname(@Param("uid") long uid, @Param("nickname") String nickname);
+
+    /**
      * 设定手机号记录数
      */
     @Select("select count(mobile) from user where mobile = #{mobile}")
@@ -141,6 +150,66 @@ public interface UserMapper {
                        @Param("password") String password,
                        @Param("salt") String salt,
                        @Param("updatedAt")Date updatedAt);
+
+    /**
+     * 修改 昵称
+     * @param uid
+     * @param nickname
+     * @param updatedAt
+     * @return
+     */
+    @Update("update user set  "
+            + "nickname  = #{nickname},    "
+            + "updated_at = #{updatedAt}"
+            + "where uid = #{uid} ")
+    int updateNickname(@Param("uid") long uid,
+                       @Param("nickname") String nickname,
+                       @Param("updatedAt")Date updatedAt);
+
+    /**
+     * 修改出生日期
+     * @param uid
+     * @param birthday
+     * @param updatedAt
+     * @return
+     */
+    @Update("update user set  "
+            + "birthday  = #{birthday},    "
+            + "updated_at = #{updatedAt}"
+            + "where uid = #{uid} ")
+    int updateBirthday(@Param("uid") long uid,
+                       @Param("birthday") String birthday,
+                       @Param("updatedAt")Date updatedAt);
+
+    /**
+     * 修改 个性签名
+     * @param uid
+     * @param profile
+     * @param updatedAt
+     * @return
+     */
+    @Update("update user set  "
+            + "profile  = #{profile},    "
+            + "updated_at = #{updatedAt}"
+            + "where uid = #{uid} ")
+    int updateProfile(@Param("uid") long uid,
+                      @Param("profile") String profile,
+                      @Param("updatedAt")Date updatedAt);
+
+    /**
+     * 修改 性别
+     * @param uid
+     * @param gender
+     * @param updatedAt
+     * @return
+     */
+    @Update("update user set  "
+            + "gender  = #{gender},    "
+            + "updated_at = #{updatedAt}"
+            + "where uid = #{uid} ")
+    int updateGender(@Param("uid") long uid,
+                     @Param("gender") int gender,
+                     @Param("updatedAt")Date updatedAt);
 
     /**
      * 删除

@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/user")
 @Slf4j
@@ -46,7 +48,11 @@ public class UserController {
         //throw new RuntimeException("error");
     }
 
-    // 手机号、密码 登录
+    /**
+     * 手机号、密码 登录
+     * @param user
+     * @return
+     */
     @PostMapping("/login")
     public RestResult login(@RequestBody User user) {
         RestResult result = new RestResult();
@@ -86,7 +92,11 @@ public class UserController {
         return result;
     }
 
-    // 手机号、短信认证码登录
+    /**
+     * 手机号、短信认证码登录
+     * @param user
+     * @return
+     */
     @PostMapping("/smslogin")
     public RestResult smsLogin(@RequestBody User user) {
         RestResult result = new RestResult();
@@ -130,7 +140,11 @@ public class UserController {
         return result;
     }
 
-    // 手机号、密码、短信认证码注册
+    /**
+     * 手机号、密码、短信认证码注册
+     * @param user
+     * @return
+     */
     @PostMapping("/register")
     public RestResult register(@RequestBody User user) {
         RestResult result = new RestResult();
@@ -207,7 +221,11 @@ public class UserController {
         return result;
     }
 
-    // 手机号、密码、短信认证码 重置密码
+    /**
+     * 手机号、密码、短信认证码 重置密码
+     * @param user
+     * @return
+     */
     @PostMapping("/resetpassword")
     public RestResult resetPassword(@RequestBody User user) {
         RestResult result = new RestResult();
@@ -275,7 +293,11 @@ public class UserController {
         return result;
     }
 
-    // 向手机发短信
+    /**
+     * 向手机发短信
+     * @param mobile
+     * @return
+     */
     @GetMapping("/sendSms")
     public RestResult sendSms(@RequestParam(value = "mobile", required = true) String mobile) {
         RestResult result = new RestResult();
@@ -308,7 +330,68 @@ public class UserController {
         return result;
     }
 
-    // 上传并修改用户头像
+    /**
+     * 修改用户信息
+     * @param map
+     * @return
+     */
+    @PostMapping("/update")
+    public RestResult updateUser( @RequestBody Map<String,String> map ) {
+        RestResult result = new RestResult();
+
+        Long uid = Long.parseLong(map.get("uid"));
+        String fieldName = map.get("fieldName");
+        String value = map.get("value");
+
+        switch (fieldName) {
+            case "nickname" : {
+                String ret = userService.updateNickname(uid,value);
+                if (!StrUtil.isBlank(ret)) {
+                    result.setCode(-1);
+                    result.setMessage(ret);
+                }
+                break;
+            }
+            case "birthday" : {
+                String ret = userService.updateBirthday(uid,value);
+                if (!StrUtil.isBlank(ret)) {
+                    result.setCode(-1);
+                    result.setMessage(ret);
+                }
+                break;
+            }
+            case "profile" : {
+                String ret = userService.updateProfile(uid,value);
+                if (!StrUtil.isBlank(ret)) {
+                    result.setCode(-1);
+                    result.setMessage(ret);
+                }
+                break;
+            }
+            case "gender" : {
+                int gender = Integer.parseInt(value);
+                String ret = userService.updateGender(uid,gender);
+                if (!StrUtil.isBlank(ret)) {
+                    result.setCode(-1);
+                    result.setMessage(ret);
+                }
+                break;
+            }
+            default:{
+                result.setCode(-1);
+                result.setMessage("no defined!");
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 上传并修改用户头像
+     * @param uid
+     * @param file
+     * @return
+     */
     @PostMapping("/uploadAvatar")
     public RestResult uploadAvatar( @RequestParam(value = "uid", required = true) Long uid,
                                     @RequestParam("file") MultipartFile file ) {
