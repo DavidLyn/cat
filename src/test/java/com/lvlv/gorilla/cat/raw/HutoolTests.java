@@ -12,6 +12,14 @@ import org.junit.jupiter.api.Test;
 
 public class HutoolTests {
     @Test
+    void testLong() {
+        Long ll = Long.parseLong("1276733459607457792");
+        //Long dd = 9223372036854775807;
+        //Long ll =  Long.MAX_VALUE;
+        System.out.println(ll);
+    }
+
+    @Test
     void test() {
         String uuid = IdUtil.randomUUID();
         System.out.println("++++++++++++++++++++++++++ uuid = " + uuid);

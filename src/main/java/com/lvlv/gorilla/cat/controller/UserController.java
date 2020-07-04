@@ -7,6 +7,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lvlv.gorilla.cat.annotation.UserLoginToken;
 import com.lvlv.gorilla.cat.config.AliSmsConfig;
 import com.lvlv.gorilla.cat.entity.sql.User;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -65,10 +67,15 @@ public class UserController {
         }
 
         User rUser;
-        if (user.getUid() == null || user.getUid() == 0 ) {
-            rUser = userService.findUserByMobile(user.getMobile());
-        } else {
-            rUser = userService.findUserByUid(user.getUid());
+        try {
+            if (user.getUid() == null || user.getUid() == 0) {
+                rUser = userService.findUserByMobile(user.getMobile());
+            } else {
+                rUser = userService.findUserByUid(user.getUid());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            rUser = null;
         }
 
         if (rUser == null) {
@@ -127,7 +134,15 @@ public class UserController {
             return result;
         }
 
-        User rUser = userService.findUserByUid(user.getUid());
+        User rUser;
+        try {
+            rUser = userService.findUserByUid(user.getUid());
+        } catch (Exception e) {
+            e.printStackTrace();
+            //log.error("---------------------------> sms get user error : " + e.printStackTrace(););
+            rUser = null;
+        }
+
         if (rUser == null) {
             result.setCode(-1);
             result.setMessage("not found user");
@@ -476,9 +491,43 @@ public class UserController {
     }
 
     /**
-     * 为向前端返回的 user 设置 token,并复位 salt
-     * @param user
+     * 根据 手机号 查询用户信息
+     * @param mobile
+     * @return
      */
+    @GetMapping("/searchByMobileOrName")
+    public RestResult searchByMobileOrName(@RequestParam(value = "mobile", required = true) String mobile) {
+        RestResult result = new RestResult();
+
+        List<User> list;
+        User user;
+        try {
+            list = userService.searchByMobile(mobile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(-1);
+            result.setMessage("DB error!");
+            return result;
+        }
+
+        log.info("--------------> list" + list.toString());
+
+        ObjectMapper mapper = new ObjectMapper();
+        String listFormatJson;
+        try {
+            listFormatJson = mapper.writeValueAsString(list);
+        } catch (Exception e) {
+            listFormatJson = "";
+        }
+
+        result.setData(listFormatJson);
+        return result;
+    }
+
+     /**
+      * 为向前端返回的 user 设置 token,并复位 salt
+      * @param user
+      */
     private void setTokenAndResetSalt(User user) {
         // 创建 token
         String token = JWT.create().withAudience(user.getUid().toString())

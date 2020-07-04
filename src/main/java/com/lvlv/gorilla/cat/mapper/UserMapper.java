@@ -2,33 +2,13 @@ package com.lvlv.gorilla.cat.mapper;
 
 import com.lvlv.gorilla.cat.entity.sql.User;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.type.JdbcType;
 
 import java.util.Date;
 import java.util.List;
 
 @Mapper
 public interface UserMapper {
-
-    /**
-     * 定义 Results map, 可通过 @ResultMap("userMap") 使用
-     * @return
-     */
-    @Results(id="userMap", value={
-            @Result(column="uid", property="uid"),
-            @Result(column="name", property="name"),
-            @Result(column="nickname", property="nickname"),
-            @Result(column="gender", property="gender"),
-            @Result(column="birthday", property="birthday"),
-            @Result(column="mobile", property="mobile"),
-            @Result(column="email", property="email"),
-            @Result(column="password", property="password"),
-            @Result(column="password", property="salt"),
-            @Result(column="avatar", property="avatar"),
-            @Result(column="profile", property="profile"),
-            @Result(column="created_at", property="createdAt"),
-            @Result(column="updated_at", property="updatedAt"),
-            @Result(column="status", property="status")
-    })
 
     /**
      * 总用户数
@@ -92,11 +72,27 @@ public interface UserMapper {
 
     /**
      * 根据 uid 查询用户
+     * 注意 : @Results 必须与 @Select 一起使用,不然不起作用!!!!!!!
      */
-    @ResultMap("userMap")
     @Select("select uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, profile, created_at, updated_at, status  "
             + "from user "
             + "where uid = #{uid} ")
+    @Results(id="userMap", value={
+            @Result(column="uid", property="uid", javaType = Long.class),
+            @Result(column="name", property="name"),
+            @Result(column="nickname", property="nickname"),
+            @Result(column="gender", property="gender"),
+            @Result(column="birthday", property="birthday"),
+            @Result(column="mobile", property="mobile"),
+            @Result(column="email", property="email"),
+            @Result(column="password", property="password"),
+            @Result(column="password", property="salt"),
+            @Result(column="avatar", property="avatar"),
+            @Result(column="profile", property="profile"),
+            @Result(column="created_at", property="createdAt"),
+            @Result(column="updated_at", property="updatedAt"),
+            @Result(column="status", property="status")
+    })
     User findUserByUid(@Param("uid") long uid);
 
     /**
@@ -104,18 +100,18 @@ public interface UserMapper {
      * @param mobile
      * @return
      */
-    @ResultMap("userMap")
     @Select("select uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, profile, created_at, updated_at, status  "
             + "from user "
             + "where mobile = #{mobile} ")
+    @ResultMap("userMap")
     User findUserByMobile(@Param("mobile") String mobile);
 
     /**
      * 查询所有用户
      */
-    @ResultMap("userMap")
     @Select("select uid, name, nickname, gender, birthday, mobile, email, password, salt, avatar, profile, created_at, updated_at, status  "
             + "from user ")
+    @ResultMap("userMap")
     List<User> findAll();
 
     /**
@@ -218,4 +214,15 @@ public interface UserMapper {
             + "where uid = #{uid}  ")
     int deleteUserByUid(@Param("uid") long uid);
 
+    /**
+     *
+     * @param mobile
+     * @return
+     *
+     */
+    @Select("select uid, name, nickname, gender, birthday, mobile, email, avatar, profile, created_at, updated_at, status  "
+            + "from user "
+            + "where mobile = #{mobile} ")
+    @ResultMap("userMap")
+    List<User> searchUserByMobile(@Param("mobile") String mobile);
 }
