@@ -282,17 +282,17 @@ public class UserController {
         }
 
         // 重新创建随机盐
-        user.setSalt(PasswordUtil.getRandomSalt());
+        rUser.setSalt(PasswordUtil.getRandomSalt());
 
         // 将新口令加盐加密保存
-        user.setPassword(PasswordUtil.getEncryptedPasswordWithSalt(user.getPassword(),user.getSalt()));
+        rUser.setPassword(PasswordUtil.getEncryptedPasswordWithSalt(user.getPassword(),rUser.getSalt()));
 
         // 设置更新时间
-        user.setUpdatedAt(DateUtil.date());
+        rUser.setUpdatedAt(DateUtil.date());
 
         // 更新数据库 user 记录
         try {
-            userService.updateUser(user);
+            userService.updateUser(rUser);
         } catch (Exception e) {
             log.error("update user erorr:" + e.getMessage());
 
@@ -301,9 +301,9 @@ public class UserController {
             return result;
         }
 
-        setTokenAndResetSalt(user);
+        setTokenAndResetSalt(rUser);
 
-        result.setData(user);
+        result.setData(rUser);
 
         return result;
     }
