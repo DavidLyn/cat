@@ -22,7 +22,7 @@ CREATE TABLE user(
   updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   status int(2) NOT NULL DEFAULT 0 COMMENT '状态: 0-(正常)在线 1-(正常)不在线 11-(不正常)注销 12-(不正常)封号',
   PRIMARY KEY (uid)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户表';
 
 -- mqtt 消息表
 DROP TABLE IF EXISTS mqttmessage;
@@ -38,4 +38,4 @@ CREATE TABLE mqttmessage(
   flagSent smallint NOT NULL DEFAULT 0 COMMENT '已发送标志 0 - 未发送  1 - 已发送',
   sendTime timestamp COMMENT '发送时间',
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='mqtt 消息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='mqtt 消息表';

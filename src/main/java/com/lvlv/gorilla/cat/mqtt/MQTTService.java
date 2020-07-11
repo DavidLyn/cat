@@ -105,7 +105,10 @@ public class MQTTService {
     private void userMessage(String topic, String payload) {
         MQTTMessage mqttMessage;
         try {
+            // 解析 App 消息并保存
             mqttMessage = mapper.readValue(payload,MQTTMessage.class);
+            mqttMessage.setFlagSent(1);    // 由于 App 端可能没有设置此字段, 因此在此设置为已发送
+            mqttMessageService.insertMessage(mqttMessage);
 
             if ("makeFriend".equals(mqttMessage.getCommand())) {
                 makeFriend(mqttMessage);

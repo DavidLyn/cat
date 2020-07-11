@@ -108,7 +108,7 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
         String payload = new String(mqttMessage.getPayload());
-        log.info("收到来自 {} 的消息：{}", topic, payload);
+        //log.info("收到来自 {} 的消息：{}", topic, payload);
 
         mqttService.parseMessage(topic,payload);
     }
@@ -183,7 +183,6 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
             mqttClient.setCallback(this);
             mqttClient.connect(options);
 
-            log.info("####################################### connect mqtt ok!");
             return true;
         } catch (MqttException e) {
             return false;

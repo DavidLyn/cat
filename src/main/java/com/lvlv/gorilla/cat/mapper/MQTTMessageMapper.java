@@ -27,7 +27,8 @@ public interface MQTTMessageMapper {
      */
     @Select("select id, type, command, msgId, payload, senderId, receiverId, flagSent, sendTime  "
             + "from mqttmessage "
-            + "where receiverId = #{uid} ")
+            + "where receiverId = #{uid} and "
+            + "      flagSent = 0 ")
     List<MQTTMessage> getUnsendMessage(@Param("uid") long uid);
 
     /**
