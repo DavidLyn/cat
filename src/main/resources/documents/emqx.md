@@ -8,7 +8,8 @@
 {
   "type":0/1                          // 0 - request   1 - response
   "command":"xxxxxxx"                 // 命令字
-  "msgId":"xxxxxxx-xxxxx-xxxx"        // uuid
+  "msgId":"xxxxxxx-xxxxx-xxxx"        // 消息id : uuid
+  "senderId":xxxxxxxx                 // 发送者id, 0 - cat   其他 - uid
   "sendTime":"xxxx-xx-xx xx:xx:xx"    // 发送时间
   "payload":"Json string"             // 负载,对象转为 Json
 }
@@ -65,7 +66,7 @@ FROM
 SELECT
   clientid
 FROM 
-   "$events/client_connected"
+   "$events/client_disconnected"
 ```
 
 + 响应动作

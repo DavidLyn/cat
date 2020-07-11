@@ -24,16 +24,18 @@ CREATE TABLE user(
   PRIMARY KEY (uid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
--- 消息表
-DROP TABLE IF EXISTS message;
+-- mqtt 消息表
+DROP TABLE IF EXISTS mqttmessage;
 
-CREATE TABLE message(
-  id bigint NOT NULL COMMENT '主键id',
-  type varchar(50) NOT NULL DEFAULT '' COMMENT '消息类型',
-  toUid bigint NOT NULL DEFAULT 0 COMMENT '目标用户ID',
-  content varchar(5000) NOT NULL DEFAULT '' COMMENT '消息内容',
-  createTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  isSended smallint NOT NULL DEFAULT 0 COMMENT '发送标志 0 - 未发送 1 - 已发送',
-  sendTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
+CREATE TABLE mqttmessage(
+  id int unsigned NOT NULL auto_increment COMMENT '主键id',
+  type smallint NOT NULL DEFAULT 0 COMMENT '消息类型 0-request 1-response 2-relay',
+  command varchar(50) NOT NULL COMMENT '命令字',
+  msgId varchar(50) COMMENT '消息id uuid',
+  payload varchar(5000) NOT NULL COMMENT '消息内容',
+  senderId bigint COMMENT '发送者id, 0 - cat   其他 - uid',
+  receiverId bigint COMMENT '接收者id, 0 - cat   其他 - uid',
+  flagSent smallint NOT NULL DEFAULT 0 COMMENT '已发送标志 0 - 未发送  1 - 已发送',
+  sendTime timestamp COMMENT '发送时间',
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='mqtt 消息表';

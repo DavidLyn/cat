@@ -5,6 +5,8 @@ import com.lvlv.gorilla.cat.entity.Address;
 import com.lvlv.gorilla.cat.entity.User;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 // https://blog.csdn.net/phone13144830339/article/details/80078914
 public class JsonTest {
     @Test
@@ -28,12 +30,18 @@ public class JsonTest {
         }
 
         User user1;
+        Map<String,Object> user2;
         try {
             user1 = mapper.readValue(ss, User.class);
             System.out.println("json2obj name = " + user1.getName());
             System.out.println("json2obj sex = " + user1.getSex());
             System.out.println("json2obj edu = " + user1.getEdu());
             System.out.println("json2obj list = " + user1.getList());
+
+            user2 = mapper.readValue(ss, Map.class);
+
+            System.out.println("json2map name = " + user2.get("name"));
+
         } catch (Exception e) {
 
         }

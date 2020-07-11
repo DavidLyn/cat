@@ -23,8 +23,20 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>, MqttCallback {
 
+    // cat 监听之 topic : 客户端上线
+    static final String TOPIC_LOGIN = "cat/login";
+
+    // cat 监听之 topic : 客户端下线
+    static final String TOPIC_LOGOUT = "cat/logout";
+
+    // cat 监听之 topic : 客户端消息
+    static final String TOPIC_CAT_EAR = "cat/ears";
+
     @Autowired
     RestTemplate restTemplate;
+
+    @Autowired
+    MQTTService mqttService;
 
     @Value("${mqtt.userName}")
     private String userName;
@@ -77,8 +89,9 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
         this.connect();
 
         // TODO  此处对订阅进行初始化
-        this.subscribe("test");
-        this.subscribe("login");
+        this.subscribe(TOPIC_LOGIN);         // 监听客户端上线
+        this.subscribe(TOPIC_LOGOUT);        // 监听客户端下线
+        this.subscribe(TOPIC_CAT_EAR);       // 监听客户端消息
 
         // 获取当前客户信息
         getMQTTClients();
@@ -86,15 +99,18 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
 
     @Override
     public void connectionLost(Throwable throwable) {
-        log.info("断开了MQTT连接 ：{}", throwable.getMessage());
-        //log.error(throwable.getMessage(), throwable);
+        log.info("MQTT连接丢失 ：{}", throwable.getMessage());
+
+        this.close();
         this.initMQTT();
     }
 
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-        //  TODO  此处可以将订阅得到的消息进行业务处理、数据存储
-        log.info("收到来自 {} 的消息：{}", topic, new String(mqttMessage.getPayload()));
+        String payload = new String(mqttMessage.getPayload());
+        log.info("收到来自 {} 的消息：{}", topic, payload);
+
+        mqttService.parseMessage(topic,payload);
     }
 
     @Override
@@ -110,6 +126,8 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
                 (getClientsUrl, HttpMethod.GET, new HttpEntity<String>(this.getMQTTHttpApiHeader()), String.class);
 
         log.info("++++++++++++++++++++++++++++++ MQTT get clients = {}", responseEntity.getBody());
+
+        // To-do 针对每个 App 客户端进行相应的初始化工作，比如：更新 Redis 中 App 客户端 MQTT 在线状态等
     }
 
     /**

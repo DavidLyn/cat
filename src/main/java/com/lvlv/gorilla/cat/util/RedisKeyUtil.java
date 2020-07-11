@@ -2,10 +2,6 @@ package com.lvlv.gorilla.cat.util;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author lv weiwei
- * @date 2020/05/02 3:55
- */
 @Slf4j
 public class RedisKeyUtil {
 
@@ -27,9 +23,21 @@ public class RedisKeyUtil {
         return "sms:" + mobile;
     }
 
-    // 获取某 userid 的 key name
+    /**
+     * 获取某 userid token 的 key name
+     * @param uid
+     * @return
+     */
     public static String getTokenKey(String uid) {
         return "token:" + uid;
     }
 
+    /**
+     * 获取某 uid 是否在线 的 key name
+     * @param uid
+     * @return
+     */
+    public static String getMQTTOnlineKey(String uid) {
+        return "mqtt:online:" + uid;
+    }
 }

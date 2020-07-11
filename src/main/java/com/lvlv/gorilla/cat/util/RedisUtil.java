@@ -598,5 +598,4 @@ public class RedisUtil {
     }
 
     //=========BoundListOperations 用法 End============
-
 }
