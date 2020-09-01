@@ -7,9 +7,10 @@ import java.util.Date;
 
 @Data
 public class MQTTMessage {
-    int id;
+    int id;                 // 主键
+
     int type = 0;           // 0 - request   1 - response   2 - relay
-    String command;         // 命令字
+    String command;         // 命令字: 请求和响应采用不同的命令字,假设请求为 xxx ,则响应为 xxxResponse
     String msgId;           // 消息id : uuid
     Long senderId = new Integer(0).longValue();          // 发送者id, 0 - cat   其他 - uid
     Long receiverId;        // 接收者id, 0 - cat   其他 - uid

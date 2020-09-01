@@ -2,7 +2,9 @@ package com.lvlv.gorilla.cat.mqtt;
 
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lvlv.gorilla.cat.entity.sql.User;
 import com.lvlv.gorilla.cat.service.MQTTMessageService;
+import com.lvlv.gorilla.cat.service.UserService;
 import com.lvlv.gorilla.cat.util.RedisKeyUtil;
 import com.lvlv.gorilla.cat.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,9 @@ public class MQTTService {
 
     @Autowired
     MQTTMessageService mqttMessageService;
+
+    @Autowired
+    UserService userService;
 
     /**
      * 获取 App 端监听的接收消息的 topic
@@ -130,20 +135,29 @@ public class MQTTService {
             Map<String, String> payloadObj = mapper.readValue(mqttMessage.getPayload(), Map.class);
             payloadObj.put("uid",mqttMessage.getSenderId().toString());
 
-            String friendUid = payloadObj.get("friendId");
+            // 把请求加友者的信息放进发给被请求者的 payload 中
+            User user = userService.findUserByUid(mqttMessage.getSenderId());
+            if (user != null) {
+                payloadObj.put("nickname",user.getNickname());
+                payloadObj.put("avatar",user.getAvatar());
+                payloadObj.put("profile",user.getProfile());
+            }
+
+            String friendId = payloadObj.get("friendId");
 
             // 生成待转发的消息
             MQTTMessage message = new MQTTMessage();
             message.setType(2);  // 转发
             message.setCommand(mqttMessage.getCommand());
-            message.setReceiverId(Long.parseLong(friendUid));
+            message.setMsgId(mqttMessage.getMsgId());
+            message.setReceiverId(Long.parseLong(friendId));
             message.setPayload(mapper.writeValueAsString(payloadObj));
 
             // 检查 friend 是否在线,如果在线转发 求加友 消息
-            if (redisUtil.hasKey(RedisKeyUtil.getMQTTOnlineKey(friendUid))) {
+            if (redisUtil.hasKey(RedisKeyUtil.getMQTTOnlineKey(friendId))) {
                 String forSend = mapper.writeValueAsString(message);
 
-                if (mqttClienter.publish(getAppListeningTopic(friendUid),forSend)) {
+                if (mqttClienter.publish(getAppListeningTopic(friendId),forSend)) {
                     message.setSendTime(new Date());
                     message.setFlagSent(1);
                 }
