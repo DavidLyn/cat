@@ -3,6 +3,7 @@ package com.lvlv.gorilla.cat.mqtt;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lvlv.gorilla.cat.entity.sql.User;
+import com.lvlv.gorilla.cat.service.FriendService;
 import com.lvlv.gorilla.cat.service.MQTTMessageService;
 import com.lvlv.gorilla.cat.service.UserService;
 import com.lvlv.gorilla.cat.util.RedisKeyUtil;
@@ -33,6 +34,9 @@ public class MQTTService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    FriendService friendService;
 
     /**
      * 获取 App 端监听的接收消息的 topic
@@ -212,8 +216,11 @@ public class MQTTService {
             mqttMessageService.insertMessage(message);
 
             // 根据 result 保存 朋友关系
-            // to-do
-
+            if ("yes".equalsIgnoreCase(result)) {
+                Long uid1 = mqttMessage.getSenderId();
+                Long uid2 = Long.parseLong(friendId);
+                friendService.addFriend(uid1,uid2);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Make friend error :" + e.getMessage());

@@ -39,3 +39,16 @@ CREATE TABLE mqttmessage(
   sendTime timestamp COMMENT '发送时间',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='mqtt 消息表';
+
+-- 好友表
+DROP TABLE IF EXISTS friend;
+
+CREATE TABLE friend(
+  id int unsigned NOT NULL auto_increment COMMENT '主键id',
+  uid bigint NOT NULL COMMENT '当前用户 uid',
+  friendId bigint NOT NULL COMMENT '好友 uid',
+  state smallint NOT NULL DEFAULT 1 COMMENT '状态 1-正常 0-删除/拉黑',
+  friendTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '好友时间',
+  deleteTime timestamp COMMENT '删除/拉黑时间',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='好友表';

@@ -1,7 +1,6 @@
 package com.lvlv.gorilla.cat.entity.sql;
 
 import lombok.Data;
-
 import java.util.Date;
 
 @Data

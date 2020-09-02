@@ -208,14 +208,16 @@ public interface UserMapper {
                      @Param("updatedAt")Date updatedAt);
 
     /**
-     * 删除
+     * 删除用户
+      * @param uid
+     * @return
      */
     @Delete("delete from user  "
             + "where uid = #{uid}  ")
     int deleteUserByUid(@Param("uid") long uid);
 
     /**
-     *
+     * 根据手机号查找用户
      * @param mobile
      * @return
      *
