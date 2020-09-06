@@ -9,7 +9,7 @@ import java.util.List;
 public interface FriendMapper {
 
     /**
-     * 获取 朋友关系 计数
+     * 获取 朋友关系 计数,用于检查是否已建立 朋友 关系
      * @param uid
      * @param friendId
      * @return
@@ -33,10 +33,12 @@ public interface FriendMapper {
     /**
      * 删除/拉黑 好友
      * @param uid
+     * @param friendId
      * @return
      */
-    @Update("update friend set state = 0, deleteTime = now()  where uid = #{uid}")
-    int deleteFriend(@Param("uid") long uid);
+    @Update("update friend set state = 0, deleteTime = now()  where uid = #{uid} and friendId = #{friendId}")
+    int deleteFriend( @Param("uid") long uid,
+                      @Param("friendId") long friendId );
 
     /**
      * 取得好友列表

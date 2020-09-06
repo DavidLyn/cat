@@ -2,6 +2,7 @@ package com.lvlv.gorilla.cat.controller;
 
 import com.lvlv.gorilla.cat.entity.sql.User;
 import com.lvlv.gorilla.cat.entity.sql.UserInfo;
+import com.lvlv.gorilla.cat.service.FollowerService;
 import com.lvlv.gorilla.cat.service.UserService;
 import com.lvlv.gorilla.cat.util.RedisUtil;
 import com.lvlv.gorilla.cat.util.RestResult;
@@ -21,6 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class SocialController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FollowerService followerService;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -47,8 +51,8 @@ public class SocialController {
         userInfo.setGender(user.getGender());
         userInfo.setProfile(user.getProfile());
 
-        userInfo.setFanNumber(220);
-        userInfo.setFollowNumber(72);
+        userInfo.setFanNumber(followerService.getFunCount(uid));
+        userInfo.setFollowNumber(followerService.getFollowCount(uid));
 
         result.setData(userInfo);
 

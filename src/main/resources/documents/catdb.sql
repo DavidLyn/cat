@@ -52,3 +52,16 @@ CREATE TABLE friend(
   deleteTime timestamp COMMENT '删除/拉黑时间',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='好友表';
+
+--  追随者表
+DROP TABLE IF EXISTS follower;
+
+CREATE TABLE follower(
+  id int unsigned NOT NULL auto_increment COMMENT '主键id',
+  uid bigint NOT NULL COMMENT '当前用户 uid',
+  followerId bigint NOT NULL COMMENT '追随者 uid',
+  state smallint NOT NULL DEFAULT 1 COMMENT '状态 1-正常 0-删除',
+  followTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '追随时间',
+  deleteTime timestamp COMMENT '删除时间',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='追随者表';
