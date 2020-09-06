@@ -3,6 +3,8 @@ package com.lvlv.gorilla.cat.mapper;
 import com.lvlv.gorilla.cat.entity.sql.Friend;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface FriendMapper {
 
@@ -35,4 +37,12 @@ public interface FriendMapper {
      */
     @Update("update friend set state = 0, deleteTime = now()  where uid = #{uid}")
     int deleteFriend(@Param("uid") long uid);
+
+    /**
+     * 取得好友列表
+     * @param uid
+     * @return
+     */
+    @Select("select id, uid , friendId, state, friendTime, deleteTime from friend where uid = #{uid}")
+    List<Friend> getFriends(@Param("uid") long uid);
 }
