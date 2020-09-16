@@ -12,7 +12,7 @@ public class FriendService {
     FriendMapper friendMapper;
 
     /**
-     *
+     * 添加 好友 关系
      * @param uid1
      * @param uid2
      */
@@ -23,5 +23,15 @@ public class FriendService {
         if (friendMapper.getFriendCount(uid2,uid1) == 0) {
             friendMapper.insertFriend(uid2,uid1);
         }
+    }
+
+    /**
+     * 修改 关系
+     * @param uid
+     * @param friendId
+     * @param relation
+     */
+    public void updateRelation(Long uid, Long friendId, String relation) {
+        friendMapper.updateRelation(uid, friendId, relation);
     }
 }

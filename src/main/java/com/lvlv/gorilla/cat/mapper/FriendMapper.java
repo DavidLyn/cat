@@ -36,7 +36,7 @@ public interface FriendMapper {
      * @param friendId
      * @return
      */
-    @Update("update friend set state = 0, deleteTime = now()  where uid = #{uid} and friendId = #{friendId}")
+    @Update("update friend set state = 0, deleteTime = now(), updateTime = now()  where uid = #{uid} and friendId = #{friendId}")
     int deleteFriend( @Param("uid") long uid,
                       @Param("friendId") long friendId );
 
@@ -45,6 +45,19 @@ public interface FriendMapper {
      * @param uid
      * @return
      */
-    @Select("select id, uid , friendId, state, friendTime, deleteTime from friend where uid = #{uid}")
+    @Select("select id, uid , friendId, relation, state, friendTime, deleteTime from friend where uid = #{uid}")
     List<Friend> getFriends(@Param("uid") long uid);
+
+    /**
+     * 修改 关系
+     * @param uid
+     * @param friendId
+     * @param relation
+     * @return
+     */
+    @Update("update friend set relation = #{relation}, updateTime = now()  where uid = #{uid} and friendId = #{friendId}")
+    int updateRelation( @Param("uid") long uid,
+                        @Param("friendId") long friendId,
+                        @Param("relation") String relation );
+
 }

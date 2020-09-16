@@ -154,6 +154,7 @@ public class MQTTService {
                 payloadObj.put("nickname", user.getNickname());
                 payloadObj.put("avatar", user.getAvatar());
                 payloadObj.put("profile", user.getProfile());
+                payloadObj.put("gender", user.getGender().toString());
             }
 
             String friendId = payloadObj.get("friendId");
