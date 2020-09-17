@@ -34,4 +34,14 @@ public class FriendService {
     public void updateRelation(Long uid, Long friendId, String relation) {
         friendMapper.updateRelation(uid, friendId, relation);
     }
+
+    /**
+     * 删除/拉黑
+     * @param uid
+     * @param friendId
+     */
+    public void deleteFriend(Long uid, Long friendId) {
+        friendMapper.deleteFriend(uid, friendId);
+    }
+
 }

@@ -74,7 +74,7 @@ public class SocialController {
      * @return
      */
     @PostMapping("/updateRelation")
-    public RestResult updateUser(@RequestBody Map<String, String> map) {
+    public RestResult updateRelation(@RequestBody Map<String, String> map) {
         RestResult result = new RestResult();
         result.setData("ok");
 
@@ -94,4 +94,31 @@ public class SocialController {
 
         return result;
     }
+
+    /**
+     * 删除/拉黑 好友
+     * @param map
+     * @return
+     */
+    @PostMapping("/deleteFriend")
+    public RestResult deleteFriend(@RequestBody Map<String, String> map) {
+        RestResult result = new RestResult();
+        result.setData("ok");
+
+        Long uid = Long.parseLong(map.get("uid"));
+        Long friendId = Long.parseLong(map.get("friendId"));
+
+        try {
+            friendService.deleteFriend( uid, friendId );
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setData("error");
+            result.setCode(-1);
+            result.setMessage("DB error!");
+            return result;
+        }
+
+        return result;
+    }
+
 }
