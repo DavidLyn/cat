@@ -53,6 +53,25 @@ git push -u origin master
 > 在 /Users/lvweiwei/.m2 下添加 settings.xml 文件，将 repository 指向 aliyun
 
 ---
+# 打包
+
++ 打包时跳过 单元测试
+
+在 pom.xml 中添加：
+
+```
+            <!-- 打包时跳过 单元测试 -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+```
+
++ 右侧 Maven -> Lifecycle -> 双击 clean -> 双击 package
+
+---
 # 导入包
 
 ## Mysql
