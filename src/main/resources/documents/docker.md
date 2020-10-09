@@ -16,6 +16,17 @@
 tcp://47.94.248.253:2375
 ```
 
+# 创建 Dockerfile
+
+在项目根目录下创建 Dockerfile，如下：
+
+```
+FROM java:openjdk-8-jdk-alpine
+ADD target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+```
+
 # 设置 ```Run/Debug Configuration```
 
 使用下述菜单：
