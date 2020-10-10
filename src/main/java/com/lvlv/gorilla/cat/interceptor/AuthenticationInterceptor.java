@@ -34,7 +34,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
 
-        log.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!toke = " + token);
+        log.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!enter AuthenticationInterceptor,toke = " + token);
 
         // 如果不是映射到方法直接通过
         if(!(object instanceof HandlerMethod)){
@@ -58,6 +58,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             if (userLoginToken.required()) {
                 // 执行认证
                 if (token == null) {
+                    log.error("-------------------------> AuthenticationInterceptor.preHandle error : token is null");
                     throw new BusinessLogicException(RestStatus.AUTHENTICATION_NO_TOKEN);
                 }
                 // 获取 token 中的 user id
@@ -65,12 +66,14 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 try {
                     userId = JWT.decode(token).getAudience().get(0);
                 } catch (JWTDecodeException j) {
+                    log.error("-------------------------> AuthenticationInterceptor.preHandle error : AUTHENTICATION_INVALID_TOKEN");
                     throw new BusinessLogicException(RestStatus.AUTHENTICATION_INVALID_TOKEN);
                 }
 
                 // 从 redis 或 数据库中读取当前 user 信息
                 User user = userService.findUserByUid(Long.parseLong(userId));
                 if (user == null) {
+                    log.error("-------------------------> AuthenticationInterceptor.preHandle error : AUTHENTICATION_INVALID_USER");
                     throw new BusinessLogicException(RestStatus.AUTHENTICATION_INVALID_USER);
                 }
 
@@ -79,6 +82,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 try {
                     jwtVerifier.verify(token);
                 } catch (JWTVerificationException e) {
+                    log.error("-------------------------> AuthenticationInterceptor.preHandle error : AUTHENTICATION_VERIFIED_FAILED");
                     throw new BusinessLogicException(RestStatus.AUTHENTICATION_VERIFIED_FAILED);
                 }
                 return true;

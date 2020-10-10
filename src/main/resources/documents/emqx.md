@@ -56,7 +56,7 @@ FROM
 >
 > 消息内容模板：${clientid}
 
-## 转发客户端连接消息至 repub/logout
+## 转发客户端 disconnect 消息至 repub/logout
 
 > cat 据此修改客户端的在线状态
 

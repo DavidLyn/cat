@@ -57,12 +57,15 @@ public class UserController {
      */
     @PostMapping("/login")
     public RestResult login(@RequestBody User user) {
+        log.info("-----------------------> login 被调用!");
+
         RestResult result = new RestResult();
 
         if ( StrUtil.isBlank(user.getMobile())   ||
              StrUtil.isBlank(user.getPassword()) ) {
             result.setCode(-1);
             result.setMessage("invalid parameters");
+            log.error("-----------------------> login error : invalid parameters");
             return result;
         }
 
@@ -81,6 +84,7 @@ public class UserController {
         if (rUser == null) {
             result.setCode(-1);
             result.setMessage("not found user");
+            log.error("-----------------------> login error : not found user");
             return result;
         }
 
@@ -90,6 +94,7 @@ public class UserController {
         if (!inputEncryptedPassword.equals(rUser.getPassword())) {
             result.setCode(-1);
             result.setMessage("invalid password");
+            log.error("-----------------------> login error : invalid password");
             return result;
         }
 
@@ -162,6 +167,8 @@ public class UserController {
      */
     @PostMapping("/register")
     public RestResult register(@RequestBody User user) {
+        log.info("-----------------------> register 被调用!");
+
         RestResult result = new RestResult();
 
         if ( StrUtil.isBlank(user.getMobile())   ||
@@ -170,6 +177,7 @@ public class UserController {
 
             result.setCode(-1);
             result.setMessage("invalid parameters");
+            log.error("-----------------------> register error : invalid parameters");
             return result;
         }
 
@@ -182,11 +190,13 @@ public class UserController {
             if (!vCode.equals(smsCode)) {
                 result.setCode(-1);
                 result.setMessage("verified code error");
+                log.error("-----------------------> register error : verified code error");
                 return result;
             }
         } else {
             result.setCode(-1);
             result.setMessage("no sms in cache");
+            log.error("-----------------------> register error : no sms in cache");
             return result;
         }
 
@@ -194,6 +204,7 @@ public class UserController {
         if (userService.isMobleExisted(user.getMobile())) {
             result.setCode(-1);
             result.setMessage("mobile already registered");
+            log.error("-----------------------> register error : mobile already registered");
             return result;
         }
 
@@ -315,6 +326,8 @@ public class UserController {
      */
     @GetMapping("/sendSms")
     public RestResult sendSms(@RequestParam(value = "mobile", required = true) String mobile) {
+        log.info("-----------------------> sendSms 被调用!");
+
         RestResult result = new RestResult();
 
         // 生成认证码
@@ -324,12 +337,11 @@ public class UserController {
         if (!aliSmsConfig.sendSms(mobile,vCode)) {
             result.setCode(-1);
             result.setMessage("sendSms error");
-
             return result;
         }
 
-        // 将手机号和认证码保存到 redis,有效期 100 秒
-        redisUtil.set(RedisKeyUtil.getMobileSmsKey(mobile),vCode,100);
+        // 将手机号和认证码保存到 redis,考虑到复杂的网络环境,有效期设置 600 秒(10分钟)
+        redisUtil.set(RedisKeyUtil.getMobileSmsKey(mobile),vCode,600);
 
         // 为测试方便将验证码返回 app 端
         result.setData(vCode);
