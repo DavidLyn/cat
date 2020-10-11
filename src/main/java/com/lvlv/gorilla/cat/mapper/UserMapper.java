@@ -86,7 +86,7 @@ public interface UserMapper {
             @Result(column="mobile", property="mobile"),
             @Result(column="email", property="email"),
             @Result(column="password", property="password"),
-            @Result(column="password", property="salt"),
+            @Result(column="salt", property="salt"),
             @Result(column="avatar", property="avatar"),
             @Result(column="profile", property="profile"),
             @Result(column="created_at", property="createdAt"),
