@@ -22,6 +22,7 @@ public class UserService {
 
     /**
      * 根据 uid 查找 user
+     *
      * @param uid
      * @return
      */
@@ -36,7 +37,7 @@ public class UserService {
         User user = userMapper.findUserByUid(uid);
 
         if (user != null) {
-            redisUtil.set(keyName,user);
+            redisUtil.set(keyName, user);
         }
 
         return user;
@@ -44,6 +45,7 @@ public class UserService {
 
     /**
      * 根据电话号码查找 user
+     *
      * @param mobile
      * @return
      */
@@ -52,7 +54,7 @@ public class UserService {
 
         if (user != null) {
             String keyName = RedisKeyUtil.getUserKey(Long.toString(user.getUid()));
-            redisUtil.set(keyName,user);
+            redisUtil.set(keyName, user);
         }
 
         return user;
@@ -60,29 +62,32 @@ public class UserService {
 
     /**
      * 增加新用户
+     *
      * @param user
      */
     public void insertUser(User user) {
         userMapper.insertUser(user);
-        redisUtil.set(RedisKeyUtil.getUserKey(Long.toString(user.getUid())),user);
+        redisUtil.set(RedisKeyUtil.getUserKey(Long.toString(user.getUid())), user);
     }
 
     /**
      * 更新用户
+     *
      * @param user
      */
     public void updateUser(User user) {
         userMapper.updateUser(user);
-        redisUtil.set(RedisKeyUtil.getUserKey(Long.toString(user.getUid())),user);
+        redisUtil.set(RedisKeyUtil.getUserKey(Long.toString(user.getUid())), user);
     }
 
     /**
      * 检查某手机号是否已经存在
+     *
      * @param mobile
      * @return
      */
     public boolean isMobleExisted(String mobile) {
-        if (userMapper.countByMobile(mobile) > 0 ) {
+        if (userMapper.countByMobile(mobile) > 0) {
             return true;
         } else {
             return false;
@@ -91,18 +96,19 @@ public class UserService {
 
     /**
      * 修改昵称
+     *
      * @param uid
      * @param value
      * @return
      */
     public String updateNickname(Long uid, String value) {
         // 检查昵称已存在
-        if (userMapper.countByNickname(uid,value) > 0) {
+        if (userMapper.countByNickname(uid, value) > 0) {
             return "昵称已存在";
         }
 
         try {
-            userMapper.updateNickname( uid, value, DateUtil.date() );
+            userMapper.updateNickname(uid, value, DateUtil.date());
             String keyName = RedisKeyUtil.getUserKey(Long.toString(uid));
             redisUtil.del(keyName);
             return "";
@@ -114,13 +120,14 @@ public class UserService {
 
     /**
      * 修改 生日
+     *
      * @param uid
      * @param value
      * @return
      */
     public String updateBirthday(Long uid, String value) {
         try {
-            userMapper.updateBirthday( uid, value, DateUtil.date() );
+            userMapper.updateBirthday(uid, value, DateUtil.date());
             String keyName = RedisKeyUtil.getUserKey(Long.toString(uid));
             redisUtil.del(keyName);
             return "";
@@ -132,13 +139,14 @@ public class UserService {
 
     /**
      * 修改 个性签名
+     *
      * @param uid
      * @param value
      * @return
      */
     public String updateProfile(Long uid, String value) {
         try {
-            userMapper.updateProfile( uid, value, DateUtil.date() );
+            userMapper.updateProfile(uid, value, DateUtil.date());
             String keyName = RedisKeyUtil.getUserKey(Long.toString(uid));
             redisUtil.del(keyName);
             return "";
@@ -150,13 +158,14 @@ public class UserService {
 
     /**
      * 修改 性别
+     *
      * @param uid
      * @param gender
      * @return
      */
     public String updateGender(Long uid, int gender) {
         try {
-            userMapper.updateGender( uid, gender, DateUtil.date() );
+            userMapper.updateGender(uid, gender, DateUtil.date());
             String keyName = RedisKeyUtil.getUserKey(Long.toString(uid));
             redisUtil.del(keyName);
             return "";
@@ -170,4 +179,25 @@ public class UserService {
         return userMapper.searchUserByMobile(mobile);
     }
 
+    /**
+     * 退出登录
+     *
+     * @param uid
+     */
+    public void logout(Long uid) {
+        // 修改数据状态
+        userMapper.logout(uid);
+
+        // 删除 Redis 相关信息
+        redisUtil.del(RedisKeyUtil.getUserKey(Long.toString(uid)));
+        redisUtil.del(RedisKeyUtil.getTokenKey(Long.toString(uid)));
+    }
+
+    /**
+     * 用户登录
+     * @param uid
+     */
+    public void login(Long uid) {
+        userMapper.login(uid);
+    }
 }

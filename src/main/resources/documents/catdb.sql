@@ -20,7 +20,7 @@ CREATE TABLE user(
   profile varchar(255) NOT NULL DEFAULT '' COMMENT '个性签名',
   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  status int(2) NOT NULL DEFAULT 0 COMMENT '状态: 0-(正常)在线 1-(正常)不在线 11-(不正常)注销 12-(不正常)封号',
+  status int(2) NOT NULL DEFAULT 0 COMMENT '状态: 0-(正常)登录 1-(正常)退出登录 11-(不正常)注销 12-(不正常)封号',
   PRIMARY KEY (uid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户表';
 

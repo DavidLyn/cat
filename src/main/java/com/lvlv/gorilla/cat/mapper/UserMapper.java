@@ -227,4 +227,27 @@ public interface UserMapper {
             + "where mobile = #{mobile} ")
     @ResultMap("userMap")
     List<User> searchUserByMobile(@Param("mobile") String mobile);
+
+    /**
+     * 用户退出登录
+     * @param uid
+     * @return
+     */
+    @Update("update user set  "
+            + "status  = 0,    "
+            + "updated_at = current_timestamp() "
+            + "where uid = #{uid} ")
+    int logout(@Param("uid") long uid);
+
+    /**
+     * 用户登录
+     * @param uid
+     * @return
+     */
+    @Update("update user set  "
+            + "status  = 1,    "
+            + "updated_at = current_timestamp() "
+            + "where uid = #{uid} ")
+    int login(@Param("uid") long uid);
+
 }

@@ -101,6 +101,10 @@ public class UserController {
         setTokenAndResetSalt(rUser);
 
         result.setData(rUser);
+
+        // 保存用户登录状态
+        userService.login(rUser.getUid());
+
         return result;
     }
 
@@ -111,14 +115,14 @@ public class UserController {
      */
     @PostMapping("/smslogin")
     public RestResult smsLogin(@RequestBody User user) {
+        log.info("-----------------------> smslogin 被调用!");
         RestResult result = new RestResult();
 
         if ( StrUtil.isBlank(user.getMobile())   ||
-                StrUtil.isBlank(user.getSalt()) ||
-                user.getUid() == null ||
-                user.getUid() == 0 ) {
+             StrUtil.isBlank(user.getSalt())  ) {
             result.setCode(-1);
             result.setMessage("invalid parameters");
+            log.error("-----------------------> smslogin error : invalid parameters");
             return result;
         }
 
@@ -131,6 +135,7 @@ public class UserController {
             if (!vCode.equals(smsCode)) {
                 result.setCode(-1);
                 result.setMessage("verified code error");
+                log.error("-----------------------> smslogin error : verified code error");
                 return result;
             }
         } else {
@@ -141,22 +146,30 @@ public class UserController {
 
         User rUser;
         try {
-            rUser = userService.findUserByUid(user.getUid());
+            if (user.getUid() == null || user.getUid() == 0 ) {
+                rUser = userService.findUserByMobile(user.getMobile());
+            } else {
+                rUser = userService.findUserByUid(user.getUid());
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            //log.error("---------------------------> sms get user error : " + e.printStackTrace(););
             rUser = null;
         }
 
         if (rUser == null) {
             result.setCode(-1);
             result.setMessage("not found user");
+            log.error("-----------------------> smslogin error : not found user");
             return result;
         }
 
         setTokenAndResetSalt(rUser);
 
         result.setData(rUser);
+
+        // 保存用户登录状态
+        userService.login(rUser.getUid());
+
         return result;
     }
 
@@ -349,10 +362,14 @@ public class UserController {
         return result;
     }
 
-    // 用户退出登录???
+    // 用户退出登录
     @GetMapping("/logout")
     public RestResult logout(@RequestParam(value = "uid", required = true) Long uid) {
+        log.info("-----------------------> logout 被调用!");
         RestResult result = new RestResult();
+
+        // 修改数据库用户记录状态 删除 Redis 相关信息
+        userService.logout(uid);
 
         return result;
     }
