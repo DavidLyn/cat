@@ -175,9 +175,8 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
             options.setUserName(userName);
             options.setPassword(password.toCharArray());
             options.setConnectionTimeout(timeout);              //默认：30 s
-            options.setCleanSession(false);                     //默认：true
-            // options.setAutomaticReconnect(true);                //默认：false
-            options.setCleanSession(false);                     //默认：true
+            options.setAutomaticReconnect(true);                //默认：false
+            options.setCleanSession(true);                      //默认：true,如果设为 false, 掉线后 emqx 中的会话将保留 7200 秒,导致马上链接会失败
             options.setKeepAliveInterval(keepalive);            //默认：60
 
             mqttClient.setCallback(this);

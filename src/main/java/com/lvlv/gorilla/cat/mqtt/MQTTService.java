@@ -77,7 +77,7 @@ public class MQTTService {
         }
 
         if (redisUtil.set(RedisKeyUtil.getMQTTOnlineKey(payload), "1")) {
-            log.info("在 Redis 中设置 MQTT key 成功 uid = : " + payload);
+            log.info("在 Redis 中设置 MQTT key 成功 uid = " + payload);
         }
         ;
 
