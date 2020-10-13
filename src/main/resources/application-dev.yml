@@ -15,7 +15,8 @@ spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver    # com.mysql.jdbc.Driver is deprecated
     #url: jdbc:mysql://127.0.0.1:3306/catdb?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
-    url: jdbc:mysql://rm-2zempfq8y09w249zfso.mysql.rds.aliyuncs.com:3306/catdb?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    # zeroDateTimeBehavior=CONVERT_TO_NULL 将出错的那个0000-00-00字段的值转为null,但实际是转换没了？？？
+    url: jdbc:mysql://rm-2zempfq8y09w249zfso.mysql.rds.aliyuncs.com:3306/catdb?catdb?zeroDateTimeBehavior=CONVERT_TO_NULL&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: lvvv            # root
     password: Passw0rd        # lvv5802001
     type: com.alibaba.druid.pool.DruidDataSource

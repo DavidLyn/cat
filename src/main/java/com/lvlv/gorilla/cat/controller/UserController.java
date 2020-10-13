@@ -553,6 +553,28 @@ public class UserController {
         return result;
     }
 
+    /**
+     * 重载朋友信息
+     * @param uid
+     * @return
+     */
+    @GetMapping("/reloadFriends")
+    public RestResult reloadFriends(@RequestParam(value = "uid", required = true) Long uid) {
+        RestResult result = new RestResult();
+
+        try {
+            List<Map<String, Object>> friends = userService.getFriendsList(uid);
+            log.debug("-----------------------------> reloadFriends = " + friends.toString() );
+            result.setData(friends);
+        } catch (Exception e) {
+            log.error("reloadFriends error : " + e.getMessage());
+            result.setMessage("DB error!");
+            result.setCode(-1);
+        }
+
+        return result;
+    }
+
      /**
       * 为向前端返回的 user 设置 token,并复位 salt
       * @param user

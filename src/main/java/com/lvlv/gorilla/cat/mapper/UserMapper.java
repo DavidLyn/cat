@@ -6,6 +6,7 @@ import org.apache.ibatis.type.JdbcType;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface UserMapper {
@@ -250,4 +251,24 @@ public interface UserMapper {
             + "where uid = #{uid} ")
     int login(@Param("uid") long uid);
 
+    /**
+     * 获取朋友列表
+     * @param uid
+     * @return
+     */
+    @Select(  " select friend.uid as uid, "
+            + " friend.friendId as friendId, "
+            + " user.nickname as nickname, "
+            + " user.avatar as avatar, "
+            + " user.profile as profile, "
+            + " user.gender as gender, "
+            + " friend.relation as relation, "
+            + " friend.state as state, "
+            + " friend.friendTime as friendTime, "
+            + " friend.updateTime as updateTime, "
+            + " friend.deleteTime as deleteTime "
+            + " from user, friend "
+            + " where friend.uid = #{uid} "
+            + "       and friend.friendId = user.uid ")
+    List<Map<String,Object>> getFriendsList(@Param("uid") long uid);
 }

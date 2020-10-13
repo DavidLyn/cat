@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -199,5 +200,14 @@ public class UserService {
      */
     public void login(Long uid) {
         userMapper.login(uid);
+    }
+
+    /**
+     * 取得朋友信息
+     * @param uid
+     * @return
+     */
+    public List<Map<String,Object>> getFriendsList(Long uid) {
+        return userMapper.getFriendsList(uid);
     }
 }
