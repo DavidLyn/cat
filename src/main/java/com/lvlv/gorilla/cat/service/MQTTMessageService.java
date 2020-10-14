@@ -34,9 +34,9 @@ public class MQTTMessageService {
 
     /**
      * 设置已发送
-     * @param uid
+     * @param id
      */
-    public void setMessageSended(long uid) {
-        mqttMessageMapper.setMessageSended(uid, new Date());
+    public void setMessageSended(long id) {
+        mqttMessageMapper.setMessageSended(id, new Date());
     }
 }

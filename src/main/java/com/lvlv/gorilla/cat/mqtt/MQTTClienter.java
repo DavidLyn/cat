@@ -220,6 +220,7 @@ public class MQTTClienter implements ApplicationListener<ContextRefreshedEvent>,
 
             return true;
         } catch (MqttException e) {
+            log.error("MQTT publish error : " + e.getMessage());
             return false;
         }
     }

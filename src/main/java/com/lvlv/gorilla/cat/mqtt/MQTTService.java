@@ -79,18 +79,23 @@ public class MQTTService {
         if (redisUtil.set(RedisKeyUtil.getMQTTOnlineKey(payload), "1")) {
             log.info("在 Redis 中设置 MQTT key 成功 uid = " + payload);
         }
-        ;
 
         // 发送未达的消息
+        try {
+            Thread.sleep(2000);    // 由于此时 app 端可能尚未完成主题的订阅, 因此延时 2 秒再发送未发送消息
+        } catch (Exception e) {
+        }
         Long uid = Long.parseLong(payload);
         List<MQTTMessage> list = mqttMessageService.getUnsendMessage(uid);
+        log.debug("---------------------> 向 " + uid.toString() + " 发送未达消息 : " + list.size());
         for (MQTTMessage message : list) {
             try {
                 String forSend = mapper.writeValueAsString(message);
                 if (mqttClienter.publish(getAppListeningTopic(payload), forSend)) {
-                    mqttMessageService.setMessageSended(uid);
+                    mqttMessageService.setMessageSended(message.id);
                 }
             } catch (Exception e) {
+                log.error("mqttClienter.publish error :" + e.getMessage());
             }
         }
     }
