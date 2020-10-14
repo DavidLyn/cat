@@ -80,24 +80,25 @@ public class MQTTService {
             log.info("在 Redis 中设置 MQTT key 成功 uid = " + payload);
         }
 
-        // 发送未达的消息
-        try {
-            Thread.sleep(2000);    // 由于此时 app 端可能尚未完成主题的订阅, 因此延时 2 秒再发送未发送消息
-        } catch (Exception e) {
-        }
-        Long uid = Long.parseLong(payload);
-        List<MQTTMessage> list = mqttMessageService.getUnsendMessage(uid);
-        log.debug("---------------------> 向 " + uid.toString() + " 发送未达消息 : " + list.size());
-        for (MQTTMessage message : list) {
-            try {
-                String forSend = mapper.writeValueAsString(message);
-                if (mqttClienter.publish(getAppListeningTopic(payload), forSend)) {
-                    mqttMessageService.setMessageSended(message.id);
-                }
-            } catch (Exception e) {
-                log.error("mqttClienter.publish error :" + e.getMessage());
-            }
-        }
+        // 由于用户上线时可能尚未完成主题订阅, 因此将此逻辑改为由 app 端在完成主题订阅后主动通过发出 getUnsentMessage 命令完成
+//        // 发送未达的消息
+//        try {
+//            Thread.sleep(2000);    // 由于此时 app 端可能尚未完成主题的订阅, 因此延时 2 秒再发送未发送消息
+//        } catch (Exception e) {
+//        }
+//        Long uid = Long.parseLong(payload);
+//        List<MQTTMessage> list = mqttMessageService.getUnsendMessage(uid);
+//        log.debug("---------------------> 向 " + uid.toString() + " 发送未达消息 : " + list.size());
+//        for (MQTTMessage message : list) {
+//            try {
+//                String forSend = mapper.writeValueAsString(message);
+//                if (mqttClienter.publish(getAppListeningTopic(payload), forSend)) {
+//                    mqttMessageService.setMessageSended(message.id);
+//                }
+//            } catch (Exception e) {
+//                log.error("mqttClienter.publish error :" + e.getMessage());
+//            }
+//        }
     }
 
     /**
@@ -134,6 +135,8 @@ public class MQTTService {
                 makeFriend(mqttMessage);
             } else if ("makeFriendResponse".equals(mqttMessage.getCommand())) {
                 makeFriendResponse(mqttMessage);
+            } else if ("getUnsentMessage".equals(mqttMessage.getCommand())) {
+                getUnsentMessage(mqttMessage);
             } else {
                 log.warn("undefined MQTT message type!");
             }
@@ -192,6 +195,7 @@ public class MQTTService {
 
     /**
      * 求加友响应 消息处理
+     *
      * @param mqttMessage
      */
     private void makeFriendResponse(MQTTMessage mqttMessage) {
@@ -225,11 +229,31 @@ public class MQTTService {
             if ("yes".equalsIgnoreCase(result)) {
                 Long uid1 = mqttMessage.getSenderId();
                 Long uid2 = Long.parseLong(friendId);
-                friendService.addFriend(uid1,uid2);
+                friendService.addFriend(uid1, uid2);
             }
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Make friend error :" + e.getMessage());
+        }
+    }
+
+    /**
+     * 获取未发送的消息
+     * @param mqttMessage
+     */
+    private void getUnsentMessage(MQTTMessage mqttMessage) {
+        Long uid = mqttMessage.senderId;
+        List<MQTTMessage> list = mqttMessageService.getUnsendMessage(uid);
+        log.debug("---------------------> 向 " + uid.toString() + " 发送未达消息 : " + list.size());
+        for (MQTTMessage message : list) {
+            try {
+                String forSend = mapper.writeValueAsString(message);
+                if (mqttClienter.publish(getAppListeningTopic(uid.toString()), forSend)) {
+                    mqttMessageService.setMessageSended(message.id);
+                }
+            } catch (Exception e) {
+                log.error("mqttClienter.publish error :" + e.getMessage());
+            }
         }
     }
 }
