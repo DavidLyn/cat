@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 /**
- * 提供与 社交 相关的服务
+ * 提供与 社交(好友) 相关的服务
  */
 @RestController
 @RequestMapping("/social")

@@ -67,3 +67,34 @@ CREATE TABLE follower(
   deleteTime timestamp COMMENT '删除时间',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='追随者表';
+
+-- 群组主表
+DROP TABLE IF EXISTS groupmain;
+
+CREATE TABLE groupmain(
+    groupId bigint NOT NULL COMMENT '群组ID',
+    tag varchar(2000) NOT NULL DEFAULT '' COMMENT '标签',
+    name varchar(50) NOT NULL DEFAULT '' UNIQUE COMMENT '群组名',
+    avatar varchar(128) NOT NULL DEFAULT '' COMMENT '头像',
+    profile varchar(255) NOT NULL DEFAULT '' COMMENT '群组简介',
+    createTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updateTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    dismissTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '解散时间',
+    state smallint NOT NULL DEFAULT 1 COMMENT '状态 1-正常 0-解散',
+    PRIMARY KEY (groupId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='群组主表';
+
+-- 群组成员表
+DROP TABLE IF EXISTS grouper;
+
+CREATE TABLE grouper(
+    id int unsigned NOT NULL auto_increment COMMENT '主键id',
+    groupId bigint NOT NULL COMMENT '群组ID',
+    uid bigint NOT NULL COMMENT '用户 uid',
+    role smallint NOT NULL DEFAULT 1 COMMENT '角色 0-群主 1-管理员 9-普通组员',
+    joinTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '入群时间',
+    updateTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    quitTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '退群时间',
+    state smallint NOT NULL DEFAULT 1 COMMENT '状态 1-正常 0-已退群',
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='群组成员表';
