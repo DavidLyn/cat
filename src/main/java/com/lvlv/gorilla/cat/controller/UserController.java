@@ -276,7 +276,7 @@ public class UserController {
              user.getUid() == 0 ) {
 
             result.setCode(-1);
-            result.setMessage("invalid parameters");
+            result.setMessage("Invalid parameters");
             return result;
         }
 
@@ -444,7 +444,7 @@ public class UserController {
         // 检查参数
         if ( uid == null || uid == 0 ) {
             result.setCode(-1);
-            result.setMessage("invalid uid");
+            result.setMessage("Invalid uid");
 
             return result;
         }
@@ -466,7 +466,7 @@ public class UserController {
         String originalFilename = file.getOriginalFilename();
         if (StrUtil.isEmpty(originalFilename)) {
             result.setCode(-1);
-            result.setMessage("invalid upload file name");
+            result.setMessage("Invalid upload file name");
             return result;
         }
 

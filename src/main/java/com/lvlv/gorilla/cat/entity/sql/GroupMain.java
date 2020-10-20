@@ -14,5 +14,5 @@ public class GroupMain {
     private Date createTime;         // 创建时间
     private Date updateTime;         // 修改时间
     private Date dismissTime;        // 解散时间
-    private int state;               // 状态 1-正常 0-解散
+    private Integer state;           // 状态 1-正常 0-解散
 }

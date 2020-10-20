@@ -20,4 +20,15 @@ public class MysqlUtil {
 
         return snowflake.nextId();
     }
+
+    /**
+     * 获取下一个 groupId
+     * @return
+     */
+    public static long getNextGroupId() {
+        Snowflake snowflake = IdUtil.createSnowflake(1, 1);
+
+        return snowflake.nextId();
+    }
+
 }

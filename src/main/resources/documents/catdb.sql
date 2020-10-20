@@ -91,7 +91,7 @@ CREATE TABLE grouper(
     id int unsigned NOT NULL auto_increment COMMENT '主键id',
     groupId bigint NOT NULL COMMENT '群组ID',
     uid bigint NOT NULL COMMENT '用户 uid',
-    role smallint NOT NULL DEFAULT 1 COMMENT '角色 0-群主 1-管理员 9-普通组员',
+    role smallint NOT NULL DEFAULT 0 COMMENT '角色 0-群主 1-管理员 9-普通组员',
     joinTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '入群时间',
     updateTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
     quitTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '退群时间',
