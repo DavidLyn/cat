@@ -99,7 +99,10 @@ public class GroupController {
         try {
             groupService.insetGroup(groupMain,grouper);
         } catch (Exception e) {
-            aliOssService.deleteFromOSS(newAvatarFileUrl);
+            log.error("Inset Group error : " + e.getMessage());
+
+            // 注意此处应用 newFileName 而不是 newAvatarFileUrl
+            aliOssService.deleteFromOSS(newFileName);
 
             result.setCode(-1);
             result.setMessage("Create new group error");

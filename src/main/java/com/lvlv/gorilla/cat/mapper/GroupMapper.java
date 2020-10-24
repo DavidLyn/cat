@@ -12,10 +12,10 @@ public interface GroupMapper {
      * @param groupMain
      * @return
      */
-    @Insert("insert into groupmain       "
-            + "(groupId, tag, name, avatar, profile, createTime, updateTime, dismissTime, state)    "
-            + "values                   "
-            + "(#{groupId}, #{tag}, #{name}, #{avatar}, #{profile}, #{createTime}, #{updateTime}, #{dismissTime}, #{state}) ")
+    @Insert("insert into groupmain "
+            + "(groupId, name, avatar, profile) "
+            + "values "
+            + "(#{groupId}, #{name}, #{avatar}, #{profile}) ")
     int insertGroupMain(GroupMain groupMain);
 
     // -------------------------------------------------------------------------------------
@@ -24,10 +24,10 @@ public interface GroupMapper {
      * @param grouper
      * @return
      */
-    @Insert("insert into grouper       "
-            + "(groupId, uid, role, joinTime, updateTime, quitTime, state)    "
+    @Insert("insert into grouper "
+            + "(groupId, uid, role)    "
             + "values                   "
-            + "(#{groupId}, #{uid}, #{role}, #{joinTime}, #{updateTime}, #{quitTime}, #{state}) ")
+            + "(#{groupId}, #{uid}, #{role}) ")
     int insertGrouper(Grouper grouper);
 
 }
